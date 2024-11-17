@@ -1,7 +1,7 @@
-package me.karltroid.leastprivilegemanagement.tools;
+package org.modernbeta.admintoolbox.tools;
 
-import me.karltroid.leastprivilegemanagement.admins.Admin;
-import me.karltroid.leastprivilegemanagement.admins.AdminManager;
+import org.modernbeta.admintoolbox.admins.Admin;
+import org.modernbeta.admintoolbox.admins.AdminManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;

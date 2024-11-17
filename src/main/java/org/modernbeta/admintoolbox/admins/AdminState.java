@@ -1,4 +1,4 @@
-package me.karltroid.leastprivilegemanagement.admins;
+package org.modernbeta.admintoolbox.admins;
 
 public enum AdminState {
     FREEROAM,

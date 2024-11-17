@@ -1,6 +1,6 @@
-package me.karltroid.leastprivilegemanagement.admins;
+package org.modernbeta.admintoolbox.admins;
 
-import me.karltroid.leastprivilegemanagement.LeastPrivilegeManagement;
+import org.modernbeta.admintoolbox.AdminToolbox;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -107,7 +107,7 @@ public class Admin
 
             setAdminState(AdminState.SPECTATING);
             Location finalTargetLocation = targetLocation;
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(LeastPrivilegeManagement.getInstance(), () -> {
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AdminToolbox.getInstance(), () -> {
                 adminPlayer.teleport(finalTargetLocation); // tp to self so player goes to ground (tick later, doesn't TP otherwise)
             },  2L);
 
@@ -163,7 +163,7 @@ public class Admin
                 }
 
                 // reveal the admin player by setting their gamemode to survival
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(LeastPrivilegeManagement.getInstance(), () -> {
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AdminToolbox.getInstance(), () -> {
                     adminPlayer.setGameMode(GameMode.SURVIVAL);
                 },  1L);
 

@@ -1,7 +1,7 @@
-package me.karltroid.leastprivilegemanagement.commands;
+package org.modernbeta.admintoolbox.commands;
 
-import me.karltroid.leastprivilegemanagement.admins.Admin;
-import me.karltroid.leastprivilegemanagement.admins.AdminManager;
+import org.modernbeta.admintoolbox.admins.Admin;
+import org.modernbeta.admintoolbox.admins.AdminManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,7 +20,7 @@ public class TargetCommand implements CommandExecutor
             return false;
 
         Player player = (Player) commandSender;
-        if (!player.hasPermission("LeastPrivilegeManagement.admin"))
+        if (!player.hasPermission("AdminToolbox.admin"))
             return false;
 
         Admin admin = AdminManager.getOnlineAdmin(player);

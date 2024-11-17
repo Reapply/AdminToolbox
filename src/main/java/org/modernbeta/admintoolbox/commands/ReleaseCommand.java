@@ -1,6 +1,6 @@
-package me.karltroid.leastprivilegemanagement.commands;
+package org.modernbeta.admintoolbox.commands;
 
-import me.karltroid.leastprivilegemanagement.tools.Freeze;
+import org.modernbeta.admintoolbox.tools.Freeze;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -22,7 +22,7 @@ public class ReleaseCommand implements CommandExecutor
         Player releaser = null;
         if (commandSender instanceof Player) {
             releaser = (Player) commandSender;
-            if (!releaser.hasPermission("LeastPrivilegeManagement.admin")) {
+            if (!releaser.hasPermission("AdminToolbox.admin")) {
                 releaser.sendMessage(ChatColor.RED + "You do not have permission to use this command");
                 return false;
             }

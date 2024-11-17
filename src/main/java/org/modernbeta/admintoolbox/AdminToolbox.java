@@ -1,14 +1,14 @@
-package me.karltroid.leastprivilegemanagement;
+package org.modernbeta.admintoolbox;
 
-import me.karltroid.leastprivilegemanagement.admins.AdminManager;
-import me.karltroid.leastprivilegemanagement.commands.*;
-import me.karltroid.leastprivilegemanagement.tools.Freeze;
+import org.modernbeta.admintoolbox.admins.AdminManager;
+import org.modernbeta.admintoolbox.commands.*;
+import org.modernbeta.admintoolbox.tools.Freeze;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class LeastPrivilegeManagement extends JavaPlugin implements Listener {
+public final class AdminToolbox extends JavaPlugin implements Listener {
 
-    static LeastPrivilegeManagement instance;
+    static AdminToolbox instance;
     AdminManager adminManager = new AdminManager();
 
     Freeze freeze = new Freeze();
@@ -34,7 +34,7 @@ public final class LeastPrivilegeManagement extends JavaPlugin implements Listen
         adminManager.clearAdmins();
     }
 
-    public static LeastPrivilegeManagement getInstance()
+    public static AdminToolbox getInstance()
     {
         return instance;
     }

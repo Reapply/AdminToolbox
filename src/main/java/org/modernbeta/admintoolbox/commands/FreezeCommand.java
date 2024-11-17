@@ -1,11 +1,8 @@
-package me.karltroid.leastprivilegemanagement.commands;
+package org.modernbeta.admintoolbox.commands;
 
-import me.karltroid.leastprivilegemanagement.admins.Admin;
-import me.karltroid.leastprivilegemanagement.admins.AdminManager;
-import me.karltroid.leastprivilegemanagement.tools.Freeze;
+import org.modernbeta.admintoolbox.tools.Freeze;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +22,7 @@ public class FreezeCommand implements CommandExecutor
         Player freezer = null;
         if (commandSender instanceof Player) {
             freezer = (Player) commandSender;
-            if (!freezer.hasPermission("LeastPrivilegeManagement.admin")) {
+            if (!freezer.hasPermission("AdminToolbox.admin")) {
                 freezer.sendMessage(ChatColor.RED + "You do not have permission to use this command");
                 return false;
             }

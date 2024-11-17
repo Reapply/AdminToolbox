@@ -1,9 +1,7 @@
-package me.karltroid.leastprivilegemanagement.commands;
+package org.modernbeta.admintoolbox.commands;
 
-import me.karltroid.leastprivilegemanagement.tools.Freeze;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

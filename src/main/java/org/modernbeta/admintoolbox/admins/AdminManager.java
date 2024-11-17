@@ -1,25 +1,14 @@
-package me.karltroid.leastprivilegemanagement.admins;
+package org.modernbeta.admintoolbox.admins;
 
-import me.karltroid.leastprivilegemanagement.LeastPrivilegeManagement;
+import org.modernbeta.admintoolbox.AdminToolbox;
 import org.bukkit.Bukkit;
-import org.bukkit.block.Dropper;
-import org.bukkit.block.Furnace;
-import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +21,7 @@ public class AdminManager implements Listener
 
     public void addAdmin(Player player)
     {
-        if (player.hasPermission("LeastPrivilegeManagement.admin"))
+        if (player.hasPermission("AdminToolbox.admin"))
             onlineAdmins.put(player.getUniqueId(), new Admin(player));
     }
 
@@ -159,7 +148,7 @@ public class AdminManager implements Listener
             Admin admin = getOnlineAdmin(player);
             if (admin.getAdminState() == AdminState.FREEROAM) return;
 
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(LeastPrivilegeManagement.getInstance(), () -> {
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AdminToolbox.getInstance(), () -> {
                 player.setHealth(20);
             },  1L);
         }

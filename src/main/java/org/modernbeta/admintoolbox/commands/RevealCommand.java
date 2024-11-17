@@ -1,8 +1,8 @@
-package me.karltroid.leastprivilegemanagement.commands;
+package org.modernbeta.admintoolbox.commands;
 
-import me.karltroid.leastprivilegemanagement.admins.Admin;
-import me.karltroid.leastprivilegemanagement.admins.AdminManager;
-import me.karltroid.leastprivilegemanagement.admins.AdminState;
+import org.modernbeta.admintoolbox.admins.Admin;
+import org.modernbeta.admintoolbox.admins.AdminManager;
+import org.modernbeta.admintoolbox.admins.AdminState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +17,7 @@ public class RevealCommand implements CommandExecutor
             return false;
 
         Player player = (Player) commandSender;
-        if (!player.hasPermission("LeastPrivilegeManagement.admin"))
+        if (!player.hasPermission("AdminToolbox.admin"))
             return false;
 
         Admin admin = AdminManager.getOnlineAdmin(player);
