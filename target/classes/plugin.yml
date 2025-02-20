@@ -1,7 +1,7 @@
 name: AdminToolbox
 version: '1.0'
 main: org.modernbeta.admintoolbox.AdminToolbox
-api-version: '1.20'
+api-version: '1.21'
 commands:
   target:
     description: Puts admin in spectating mode and optionally teleports to target player
