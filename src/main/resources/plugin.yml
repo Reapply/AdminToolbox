@@ -1,5 +1,5 @@
 name: AdminToolbox
-version: '${project.version}'
+version: '${version}'
 main: org.modernbeta.admintoolbox.AdminToolbox
 api-version: '1.20'
 commands:
