@@ -1,7 +1,7 @@
 name: AdminToolbox
 version: '${project.version}'
 main: org.modernbeta.admintoolbox.AdminToolbox
-api-version: '1.21'
+api-version: '1.20'
 folia-supported: true
 commands:
   target:
