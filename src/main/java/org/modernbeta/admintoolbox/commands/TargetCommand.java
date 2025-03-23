@@ -1,11 +1,8 @@
 package org.modernbeta.admintoolbox.commands;
 
+import org.bukkit.*;
 import org.modernbeta.admintoolbox.admins.Admin;
 import org.modernbeta.admintoolbox.admins.AdminManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,15 +36,23 @@ public class TargetCommand implements CommandExecutor
         }
         else if (args.length == 4)
         {
-            if (args[3].equals("nether") || args[3].equals("hell") || args[3].equals("world_nether")) {
-                Location tpLocation = new Location(Bukkit.getWorld("world_nether"), Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                admin.toggleAdminMode(null, tpLocation);
-            } else if (args[3].equals("world") || args[3].equals("overworld")) {
-                Location tpLocation = new Location(Bukkit.getWorld("world"), Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                admin.toggleAdminMode(null, tpLocation);
-            } else {
-                player.sendMessage(ChatColor.RED + "Unknown world name.");
+            // standardize name
+            String worldName = args[3];
+            if (args[3].equalsIgnoreCase("nether") || args[3].equalsIgnoreCase("hell")) {
+                worldName = "world_nether";
+            } else if (args[3].equalsIgnoreCase("overworld")) {
+                worldName = "world";
             }
+
+            // ensure world is found
+            World world = Bukkit.getWorld(worldName);
+            if (world == null) {
+                player.sendMessage(ChatColor.RED + "This world does not exist.");
+                return true;
+            }
+
+            Location tpLocation = new Location(Bukkit.getWorld(worldName), Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+            admin.toggleAdminMode(null, tpLocation);
         }
         else if (args.length > 4)
         {
