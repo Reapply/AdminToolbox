@@ -138,11 +138,9 @@ public class AdminManager implements Listener
     }*/
 
     @EventHandler
-    void onAdminHurt(EntityDamageEvent event)
-    {
+    void onAdminHurt(EntityDamageEvent event) {
         // admins not in free roam can't be hurt
-        if (event.getEntity() instanceof Player player)
-        {
+        if (event.getEntity() instanceof Player player) {
             if (!isAdmin(player)) return;
 
             Admin admin = getOnlineAdmin(player);
@@ -150,7 +148,7 @@ public class AdminManager implements Listener
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AdminToolbox.getInstance(), () -> {
                 player.setHealth(20);
-            },  1L);
+            }, 1L);
         }
     }
 
