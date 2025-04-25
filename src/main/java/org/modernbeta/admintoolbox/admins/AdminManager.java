@@ -1,6 +1,5 @@
 package org.modernbeta.admintoolbox.admins;
 
-import org.modernbeta.admintoolbox.AdminToolbox;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +8,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.modernbeta.admintoolbox.AdminToolbox;
 
 import java.util.HashMap;
 import java.util.List;
@@ -139,17 +139,15 @@ public class AdminManager implements Listener
 
     @EventHandler
     void onAdminHurt(EntityDamageEvent event) {
-        // admins not in free roam can't be hurt
-        if (event.getEntity() instanceof Player player) {
-            if (!isAdmin(player)) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!isAdmin(player)) return;
 
-            Admin admin = getOnlineAdmin(player);
-            if (admin.getAdminState() == AdminState.FREEROAM) return;
+        Admin admin = getOnlineAdmin(player);
+        if (admin.getAdminState() == AdminState.FREEROAM) return;
 
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AdminToolbox.getInstance(), () -> {
-                player.setHealth(20);
-            }, 1L);
-        }
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AdminToolbox.getInstance(), () -> {
+            player.setHealth(20);
+        }, 1L);
     }
 
     @EventHandler
