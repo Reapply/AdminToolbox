@@ -1,6 +1,7 @@
 package org.modernbeta.admintoolbox.admins;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -140,6 +141,7 @@ public class AdminManager implements Listener
 
     @EventHandler
     void onEntityTargetAdmin(EntityTargetEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
         if (!(event.getTarget() instanceof Player player)) return;
         if (!isAdmin(player)) return;
         if (getOnlineAdmin(player).adminState == AdminState.FREEROAM) return;
