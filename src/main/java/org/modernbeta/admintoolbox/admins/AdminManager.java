@@ -148,11 +148,13 @@ public class AdminManager implements Listener
         double oldHealth = player.getHealth();
 
         switch (event.getCause()) {
-            // don't cancel suffocation because some admins like to intentionally use this as a joke
-            case SUFFOCATION -> player.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
-                player.setHealth(oldHealth);
-            }, null, 1L);
-            // otherwise we simply silently cancel other damage dealt to admins!
+            // we keep some damage types so admins don't appear to be cheating,
+            // and others because some staff use some as a joke sometimes :)
+            case FALL, SUFFOCATION, BLOCK_EXPLOSION, ENTITY_EXPLOSION, ENTITY_ATTACK, ENTITY_SWEEP_ATTACK ->
+                    player.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
+                        player.setHealth(oldHealth);
+                    }, null, 1L);
+            // otherwise we silently cancel other damage dealt to admins!
             default -> event.setCancelled(true);
         }
     }
