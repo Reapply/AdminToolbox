@@ -151,7 +151,7 @@ public class AdminManager implements Listener
     }
 
     @EventHandler
-    void onAdminHurt(PlayerDeathEvent event)
+    void onAdminDeath(PlayerDeathEvent event)
     {
         // admins not in free roam can't be hurt
         Player player = event.getPlayer();
