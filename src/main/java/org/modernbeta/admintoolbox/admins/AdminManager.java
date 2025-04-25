@@ -145,9 +145,11 @@ public class AdminManager implements Listener
         Admin admin = getOnlineAdmin(player);
         if (admin.getAdminState() == AdminState.FREEROAM) return;
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AdminToolbox.getInstance(), () -> {
-            player.setHealth(20);
-        }, 1L);
+        double oldHealth = player.getHealth();
+
+        player.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
+            player.setHealth(oldHealth);
+        }, null, 1L);
     }
 
     @EventHandler
