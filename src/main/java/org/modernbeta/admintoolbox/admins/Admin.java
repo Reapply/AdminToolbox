@@ -209,8 +209,8 @@ public class Admin
         savedPriorInventory = null;
 
         plugin.blueMap.ifPresent(mapAPI -> {
-            this.savedMapVisibility.ifPresent(oldVisiblity -> {
-                mapAPI.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), oldVisiblity);
+            this.savedMapVisibility.ifPresent(oldVisibility -> {
+                mapAPI.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), oldVisibility);
             });
         });
     }
