@@ -8,6 +8,7 @@ import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.tools.Freeze;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public final class AdminToolbox extends JavaPlugin implements Listener {
 
@@ -15,16 +16,13 @@ public final class AdminToolbox extends JavaPlugin implements Listener {
     AdminManager adminManager = new AdminManager();
 
     Freeze freeze = new Freeze();
-    @Nullable
-    BlueMapAPI blueMap = null;
+    public Optional<BlueMapAPI> blueMap;
 
     @Override
     public void onEnable() {
         instance = this;
 
-        BlueMapAPI.getInstance().ifPresent(blueMapAPI -> {
-            this.blueMap = blueMapAPI;
-        });
+        blueMap = BlueMapAPI.getInstance();
 
         getServer().getPluginManager().registerEvents(adminManager, this);
         getServer().getPluginManager().registerEvents(freeze, this);
