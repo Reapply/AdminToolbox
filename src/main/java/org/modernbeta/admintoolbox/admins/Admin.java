@@ -1,27 +1,33 @@
 package org.modernbeta.admintoolbox.admins;
 
-import org.modernbeta.admintoolbox.AdminToolbox;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.modernbeta.admintoolbox.AdminToolbox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@SuppressWarnings("UnstableApiUsage")
 public class Admin
 {
+    AdminToolbox plugin = AdminToolbox.getInstance();
     Player adminPlayer;
     AdminState adminState;
     ItemStack[] savedPriorInventory;
     Location savedPriorLocation;
     ArrayList<Location> currentLocationHistory = new ArrayList<>();
     int locationHistoryOffset = 0;
-
+    Optional<Boolean> savedMapVisibility = Optional.empty();
 
     public Admin(Player adminPlayer)
     {
         this.adminPlayer = adminPlayer;
         setAdminState(AdminState.FREEROAM);
+        plugin.blueMap.ifPresent(mapAPI -> {
+            savedMapVisibility = Optional.of(mapAPI.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId()));
+        });
     }
 
 
@@ -163,6 +169,7 @@ public class Admin
                     break;
                 }
 
+
                 // reveal the admin player by setting their gamemode to survival
                 adminPlayer.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
                     adminPlayer.setGameMode(GameMode.SURVIVAL);
@@ -186,6 +193,10 @@ public class Admin
         savedPriorLocation = adminPlayer.getLocation();
         savedPriorInventory = adminPlayer.getInventory().getContents();
         adminPlayer.getInventory().clear();
+        plugin.blueMap.ifPresent(mapAPI -> {
+            boolean oldVisibility = mapAPI.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
+            this.savedMapVisibility = Optional.of(oldVisibility);
+        });
     }
 
 
@@ -196,6 +207,12 @@ public class Admin
 
         if (savedPriorInventory != null) adminPlayer.getInventory().setContents(savedPriorInventory);
         savedPriorInventory = null;
+
+        plugin.blueMap.ifPresent(mapAPI -> {
+            this.savedMapVisibility.ifPresent(oldVisiblity -> {
+                mapAPI.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), oldVisiblity);
+            });
+        });
     }
 
     public Player getPlayer() {
