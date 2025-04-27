@@ -1,10 +1,10 @@
 package org.modernbeta.admintoolbox;
 
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.admins.AdminManager;
 import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.tools.Freeze;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public final class AdminToolbox extends JavaPlugin implements Listener {
 
@@ -14,18 +14,17 @@ public final class AdminToolbox extends JavaPlugin implements Listener {
     Freeze freeze = new Freeze();
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         instance = this;
         getServer().getPluginManager().registerEvents(adminManager, this);
         getServer().getPluginManager().registerEvents(freeze, this);
-        getInstance().getCommand("target").setExecutor(new TargetCommand());
-        getInstance().getCommand("reveal").setExecutor(new RevealCommand());
-        getInstance().getCommand("back").setExecutor(new BackCommand());
-        getInstance().getCommand("forward").setExecutor(new ForwardCommand());
-        getInstance().getCommand("freeze").setExecutor(new FreezeCommand());
-        getInstance().getCommand("release").setExecutor(new ReleaseCommand());
-        getInstance().getCommand("yell").setExecutor(new YellCommand());
+        getCommand("target").setExecutor(new TargetCommand());
+        getCommand("reveal").setExecutor(new RevealCommand());
+        getCommand("back").setExecutor(new BackCommand());
+        getCommand("forward").setExecutor(new ForwardCommand());
+        getCommand("freeze").setExecutor(new FreezeCommand());
+        getCommand("release").setExecutor(new ReleaseCommand());
+        getCommand("yell").setExecutor(new YellCommand());
     }
 
     @Override
