@@ -1,10 +1,13 @@
 package org.modernbeta.admintoolbox;
 
+import de.bluecolored.bluemap.api.BlueMapAPI;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.admins.AdminManager;
 import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.tools.Freeze;
+
+import javax.annotation.Nullable;
 
 public final class AdminToolbox extends JavaPlugin implements Listener {
 
@@ -12,12 +15,20 @@ public final class AdminToolbox extends JavaPlugin implements Listener {
     AdminManager adminManager = new AdminManager();
 
     Freeze freeze = new Freeze();
+    @Nullable
+    BlueMapAPI blueMap = null;
 
     @Override
     public void onEnable() {
         instance = this;
+
+        BlueMapAPI.getInstance().ifPresent(blueMapAPI -> {
+            this.blueMap = blueMapAPI;
+        });
+
         getServer().getPluginManager().registerEvents(adminManager, this);
         getServer().getPluginManager().registerEvents(freeze, this);
+
         getCommand("target").setExecutor(new TargetCommand());
         getCommand("reveal").setExecutor(new RevealCommand());
         getCommand("back").setExecutor(new BackCommand());
@@ -28,9 +39,9 @@ public final class AdminToolbox extends JavaPlugin implements Listener {
     }
 
     @Override
-    public void onDisable()
-    {
+    public void onDisable() {
         adminManager.clearAdmins();
+        this.blueMap = null;
     }
 
     public static AdminToolbox getInstance()
