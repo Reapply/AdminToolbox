@@ -5,9 +5,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.modernbeta.admintoolbox.AdminToolbox;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
 public class Admin
@@ -19,15 +19,17 @@ public class Admin
     Location savedPriorLocation;
     ArrayList<Location> currentLocationHistory = new ArrayList<>();
     int locationHistoryOffset = 0;
-    Optional<Boolean> savedMapVisibility = Optional.empty();
+    @Nullable
+    Boolean savedMapVisibility = null;
 
     public Admin(Player adminPlayer)
     {
         this.adminPlayer = adminPlayer;
         setAdminState(AdminState.FREEROAM);
-        plugin.blueMap.ifPresent(mapAPI -> {
-            savedMapVisibility = Optional.of(mapAPI.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId()));
-        });
+
+        if (plugin.blueMap != null) {
+            savedMapVisibility = plugin.blueMap.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
+        }
     }
 
 
@@ -149,7 +151,11 @@ public class Admin
 
 
             case SPECTATING:
-                if (previousAdminState.equals(AdminState.FREEROAM)) savePriorData();
+                if (previousAdminState.equals(AdminState.FREEROAM)) {
+                    savePriorData();
+                    if (plugin.blueMap != null)
+                        plugin.blueMap.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), false);
+                }
                 adminPlayer.setGameMode(GameMode.SPECTATOR);
                 break;
 
@@ -193,10 +199,10 @@ public class Admin
         savedPriorLocation = adminPlayer.getLocation();
         savedPriorInventory = adminPlayer.getInventory().getContents();
         adminPlayer.getInventory().clear();
-        plugin.blueMap.ifPresent(mapAPI -> {
-            boolean oldVisibility = mapAPI.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
-            this.savedMapVisibility = Optional.of(oldVisibility);
-        });
+
+        if (plugin.blueMap != null) {
+            this.savedMapVisibility = plugin.blueMap.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
+        }
     }
 
 
@@ -208,11 +214,10 @@ public class Admin
         if (savedPriorInventory != null) adminPlayer.getInventory().setContents(savedPriorInventory);
         savedPriorInventory = null;
 
-        plugin.blueMap.ifPresent(mapAPI -> {
-            this.savedMapVisibility.ifPresent(oldVisibility -> {
-                mapAPI.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), oldVisibility);
-            });
-        });
+        if (plugin.blueMap != null && savedMapVisibility != null) {
+            plugin.getLogger().info("Restoring old visibility of " + savedMapVisibility);
+            plugin.blueMap.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), savedMapVisibility);
+        }
     }
 
     public Player getPlayer() {
