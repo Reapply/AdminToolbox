@@ -1,6 +1,7 @@
 plugins {
 	id("java")
 	id("com.github.johnrengelman.shadow") version "8.1.1"
+	id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "org.modernbeta.admintoolbox"
@@ -22,6 +23,15 @@ dependencies {
 
 java {
 	toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+runPaper.folia.registerTask {
+	minecraftVersion("1.20.4")
+
+	downloadPlugins {
+		// makes testing much easier
+		modrinth("viaversion", "5.3.2")
+	}
 }
 
 tasks.build {
