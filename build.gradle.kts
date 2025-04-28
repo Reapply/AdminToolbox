@@ -29,8 +29,7 @@ runPaper.folia.registerTask {
 	minecraftVersion("1.20.4")
 
 	downloadPlugins {
-		// makes testing much easier
-		modrinth("viaversion", "5.3.2")
+		modrinth("viaversion", "5.3.2") // makes testing much easier
 	}
 }
 
