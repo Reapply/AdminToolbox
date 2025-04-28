@@ -30,6 +30,7 @@ runPaper.folia.registerTask {
 
 	downloadPlugins {
 		modrinth("viaversion", "5.3.2") // makes testing much easier
+		modrinth("bluemap", "5.5-paper")
 	}
 }
 
