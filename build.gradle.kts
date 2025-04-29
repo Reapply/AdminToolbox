@@ -14,10 +14,14 @@ repositories {
 	maven("https://oss.sonatype.org/content/groups/public/") {
 		name = "sonatype"
 	}
+    maven("https://repo.bluecolored.de/releases") {
+        name = "bluemap"
+    }
 }
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("de.bluecolored:bluemap-api:2.7.4")
 }
 
 java {

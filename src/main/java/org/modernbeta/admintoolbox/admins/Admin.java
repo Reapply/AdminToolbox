@@ -1,27 +1,35 @@
 package org.modernbeta.admintoolbox.admins;
 
-import org.modernbeta.admintoolbox.AdminToolbox;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.modernbeta.admintoolbox.AdminToolbox;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("UnstableApiUsage")
 public class Admin
 {
+    AdminToolbox plugin = AdminToolbox.getInstance();
     Player adminPlayer;
     AdminState adminState;
     ItemStack[] savedPriorInventory;
     Location savedPriorLocation;
     ArrayList<Location> currentLocationHistory = new ArrayList<>();
     int locationHistoryOffset = 0;
-
+    @Nullable
+    Boolean savedMapVisibility = null;
 
     public Admin(Player adminPlayer)
     {
         this.adminPlayer = adminPlayer;
         setAdminState(AdminState.FREEROAM);
+
+        if (plugin.blueMap != null) {
+            savedMapVisibility = plugin.blueMap.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
+        }
     }
 
 
@@ -143,7 +151,11 @@ public class Admin
 
 
             case SPECTATING:
-                if (previousAdminState.equals(AdminState.FREEROAM)) savePriorData();
+                if (previousAdminState.equals(AdminState.FREEROAM)) {
+                    savePriorData();
+                    if (plugin.blueMap != null)
+                        plugin.blueMap.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), false);
+                }
                 adminPlayer.setGameMode(GameMode.SPECTATOR);
                 break;
 
@@ -162,6 +174,7 @@ public class Admin
                     adminLocation.add(adminTpLocation);
                     break;
                 }
+
 
                 // reveal the admin player by setting their gamemode to survival
                 adminPlayer.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
@@ -186,6 +199,10 @@ public class Admin
         savedPriorLocation = adminPlayer.getLocation();
         savedPriorInventory = adminPlayer.getInventory().getContents();
         adminPlayer.getInventory().clear();
+
+        if (plugin.blueMap != null) {
+            this.savedMapVisibility = plugin.blueMap.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
+        }
     }
 
 
@@ -196,6 +213,11 @@ public class Admin
 
         if (savedPriorInventory != null) adminPlayer.getInventory().setContents(savedPriorInventory);
         savedPriorInventory = null;
+
+        if (plugin.blueMap != null && savedMapVisibility != null) {
+            plugin.getLogger().info("Restoring old visibility of " + savedMapVisibility);
+            plugin.blueMap.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), savedMapVisibility);
+        }
     }
 
     public Player getPlayer() {
