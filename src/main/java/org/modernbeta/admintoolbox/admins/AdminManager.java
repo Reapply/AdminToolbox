@@ -1,14 +1,16 @@
 package org.modernbeta.admintoolbox.admins;
 
-import org.modernbeta.admintoolbox.AdminToolbox;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.modernbeta.admintoolbox.AdminToolbox;
 
 import java.util.HashMap;
 import java.util.List;
@@ -136,6 +138,15 @@ public class AdminManager implements Listener
                 event.setCancelled(true);
         }
     }*/
+
+    @EventHandler
+    void onEntityTargetAdmin(EntityTargetEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
+        if (!(event.getTarget() instanceof Player player)) return;
+        if (!isAdmin(player)) return;
+        if (getOnlineAdmin(player).adminState == AdminState.FREEROAM) return;
+        event.setCancelled(true);
+    }
 
     @EventHandler
     void onAdminHurt(EntityDamageEvent event)
