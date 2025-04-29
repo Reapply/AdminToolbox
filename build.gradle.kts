@@ -1,6 +1,7 @@
 plugins {
 	id("java")
 	id("com.github.johnrengelman.shadow") version "8.1.1"
+	id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "org.modernbeta.admintoolbox"
@@ -14,14 +15,27 @@ repositories {
 	maven("https://oss.sonatype.org/content/groups/public/") {
 		name = "sonatype"
 	}
+    maven("https://repo.bluecolored.de/releases") {
+        name = "bluemap"
+    }
 }
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("de.bluecolored:bluemap-api:2.7.4")
 }
 
 java {
 	toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+runPaper.folia.registerTask {
+	minecraftVersion("1.20.4")
+
+	downloadPlugins {
+		modrinth("viaversion", "5.3.2") // makes testing much easier
+		modrinth("bluemap", "5.5-paper")
+	}
 }
 
 tasks.build {
