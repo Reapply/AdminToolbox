@@ -141,6 +141,9 @@ public class AdminManager implements Listener
 
     @EventHandler
     void onEntityTargetAdmin(EntityTargetEvent event) {
+        // if YOU attacked it, it can target you :)
+        if (event.getReason() == EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY || event.getReason() == EntityTargetEvent.TargetReason.TARGET_ATTACKED_NEARBY_ENTITY)
+            return;
         if (!(event.getEntity() instanceof LivingEntity)) return;
         if (!(event.getTarget() instanceof Player player)) return;
         if (!isAdmin(player)) return;
