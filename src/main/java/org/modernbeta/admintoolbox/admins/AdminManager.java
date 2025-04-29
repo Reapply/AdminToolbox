@@ -1,16 +1,17 @@
 package org.modernbeta.admintoolbox.admins;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.modernbeta.admintoolbox.AdminToolbox;
 
 import java.util.HashMap;
 import java.util.List;
@@ -148,7 +149,7 @@ public class AdminManager implements Listener
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     void onAdminHurt(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!isAdmin(player)) return;
@@ -156,17 +157,7 @@ public class AdminManager implements Listener
         Admin admin = getOnlineAdmin(player);
         if (admin.getAdminState() == AdminState.FREEROAM) return;
 
-        double oldHealth = player.getHealth();
-
-        switch (event.getCause()) {
-            // keep suffocation because if you /reveal inside a wall you're probably
-            // doing it on purpose to trigger suffocation damage :)
-            case SUFFOCATION ->
-                    player.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
-                        player.setHealth(oldHealth);
-                    }, null, 1L);
-            default -> event.setCancelled(true);
-        }
+        event.setDamage(0.0);
     }
 
     @EventHandler
