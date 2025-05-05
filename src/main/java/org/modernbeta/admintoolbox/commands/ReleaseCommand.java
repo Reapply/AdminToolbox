@@ -1,6 +1,6 @@
 package org.modernbeta.admintoolbox.commands;
 
-import org.modernbeta.admintoolbox.tools.Freeze;
+import org.modernbeta.admintoolbox.tools.FreezeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -34,12 +34,12 @@ public class ReleaseCommand implements CommandExecutor
             return false;
         }
 
-        if (!Freeze.getFrozenPlayers().contains(target.getUniqueId())) {
+        if (!FreezeManager.getFrozenPlayers().contains(target.getUniqueId())) {
             commandSender.sendMessage(ChatColor.RED + "This player is not frozen, no need to release them.");
             return false;
         }
 
-        Freeze.releasePlayer(releaser, target);
+        FreezeManager.releasePlayer(releaser, target);
         return true;
     }
 }

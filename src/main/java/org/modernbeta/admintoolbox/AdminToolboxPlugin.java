@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.admins.AdminManager;
 import org.modernbeta.admintoolbox.commands.*;
-import org.modernbeta.admintoolbox.tools.Freeze;
+import org.modernbeta.admintoolbox.tools.FreezeManager;
 
 import javax.annotation.Nullable;
 
@@ -16,7 +16,7 @@ public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
     @NotNull
     AdminManager adminManager = new AdminManager();
     @NotNull
-    Freeze freeze = new Freeze();
+    FreezeManager freezeManager = new FreezeManager();
 
     @Nullable
     BlueMapAPI blueMap = null;
@@ -31,7 +31,7 @@ public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
         });
 
         getServer().getPluginManager().registerEvents(adminManager, this);
-        getServer().getPluginManager().registerEvents(freeze, this);
+        getServer().getPluginManager().registerEvents(freezeManager, this);
 
         getCommand("target").setExecutor(new TargetCommand());
         getCommand("reveal").setExecutor(new RevealCommand());
@@ -52,8 +52,12 @@ public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
         return instance;
     }
 
-    public AdminManager getAdminManager() {
+    public @NotNull AdminManager getAdminManager() {
         return adminManager;
+    }
+
+    public @NotNull FreezeManager getFreezeManager() {
+        return freezeManager;
     }
 
     @Nullable

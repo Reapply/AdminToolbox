@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Freeze implements Listener {
+public class FreezeManager implements Listener {
     static List<UUID> frozenPlayers = new ArrayList<>();
 
     public static void freezePlayer(Player freezer, OfflinePlayer target) {

@@ -1,6 +1,6 @@
 package org.modernbeta.admintoolbox.commands;
 
-import org.modernbeta.admintoolbox.tools.Freeze;
+import org.modernbeta.admintoolbox.tools.FreezeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -34,12 +34,12 @@ public class FreezeCommand implements CommandExecutor
             return false;
         }
 
-        if (Freeze.getFrozenPlayers().contains(target.getUniqueId())) {
+        if (FreezeManager.getFrozenPlayers().contains(target.getUniqueId())) {
             commandSender.sendMessage(ChatColor.RED + "This player is already frozen!");
             return false;
         }
 
-        Freeze.freezePlayer(freezer, target);
+        FreezeManager.freezePlayer(freezer, target);
         return true;
     }
 }
