@@ -18,11 +18,15 @@ repositories {
     maven("https://repo.bluecolored.de/releases") {
         name = "bluemap"
     }
+	maven("https://jitpack.io") {
+		name = "jitpack"
+	}
 }
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("de.bluecolored:bluemap-api:2.7.4")
+	compileOnly("com.github.LeonMangler:SuperVanish:6.2.18-3")
 }
 
 java {
@@ -35,6 +39,7 @@ runPaper.folia.registerTask {
 	downloadPlugins {
 		modrinth("viaversion", "5.3.2") // makes testing much easier
 		modrinth("bluemap", "5.5-paper")
+
 	}
 }
 
@@ -49,4 +54,14 @@ tasks.processResources {
 	filesMatching("plugin.yml") {
 		expand(props)
 	}
+}
+
+// better IntelliJ IDEA debugging
+// see: https://github.com/jpenilla/run-task/wiki/Debugging
+tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
+	javaLauncher = javaToolchains.launcherFor {
+		vendor = JvmVendorSpec.JETBRAINS
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+	jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }

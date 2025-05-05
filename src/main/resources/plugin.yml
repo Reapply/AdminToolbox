@@ -1,39 +1,74 @@
 name: AdminToolbox
 version: '${version}'
+authors: [ Karltroid, iLynxcat ]
 main: org.modernbeta.admintoolbox.AdminToolboxPlugin
 api-version: '1.20'
 folia-supported: true
 softdepend: [ BlueMap ]
+
+permissions:
+  admintoolbox.target:
+    description: Can target players and coordinate locations.
+    children: [ admintoolbox.target.player, admintoolbox.target.location ]
+  admintoolbox.target.player:
+    description: Can target specific players' locations.
+  admintoolbox.target.location:
+    description: Can target specific coordinates.
+  admintoolbox.reveal:
+    description: Can reveal from spectator mode.
+  admintoolbox.freeze:
+    description: Can freeze and unfreeze other players.
+  admintoolbox.yell:
+    description: Can forcibly show big red text to other players.
+  admintoolbox.broadcast.receive:
+    description: Should receive broadcasts about actions by other admins.
+  admintoolbox.broadcast.exempt:
+    description: Admin actions should NOT broadcast to other admins.
+  # Legacy catch-all admin permission. Children list is designed to be
+  # backwards-compatible with previous versions of AdminToolbox.
+  admintoolbox.admin:
+    description: Can perform all AdminToolbox actions.
+    children:
+      - admintoolbox.target
+      - admintoolbox.reveal
+      - admintoolbox.freeze
+      - admintoolbox.yell
+      - admintoolbox.broadcast.receive
+default-permission: op
+
 commands:
-  target:
-    description: Puts admin in spectating mode and optionally teleports to target player
-    usage: /target <player>
-    permission: admintoolbox.admin
-    aliases: [ admin, tp, teleport, spec, spectate, gmsp ]
+  spectate:
+    description: Enter spectator mode, optionally at a specific player or location.
+    usage: |
+      /<command> <player>
+      /<command> <x> <y> <z> [world]
+    permission: admintoolbox.target
+    aliases: [ admin, spec, target ]
   reveal:
     description: Puts admin in spectating mode in survival mode to show themselves to the target player
-    usage: /reveal
-    permission: admintoolbox.admin
-    aliases: [ show, gms, survival, gm0 ]
+    usage: /<command>
+    permission: admintoolbox.reveal
+    aliases: [ show ]
   back:
     description: Teleports an admin to their previous teleported location
-    usage: /back
-    permission: admintoolbox.admin
+    usage: /<command>
+    permission: admintoolbox.target
   forward:
     description: Teleports an admin back to where they were before their previous /back
-    usage: /forward
-    permission: admintoolbox.admin
+    usage: /<command>
+    permission: admintoolbox.target
   freeze:
     description: Stops a given player from moving.
-    usage: /freeze <player>
-    permission: admintoolbox.admin
-  release:
+    usage: /<command> <player>
+    permission: admintoolbox.freeze
+    aliases: [ capture ]
+  unfreeze:
     description: Allows a frozen player to move once again.
-    usage: /release <player>
-    permission: admintoolbox.admin
-    aliases: [ unfreeze ]
+    usage: /<command> <player>
+    permission: admintoolbox.freeze
+    aliases: [ release ]
   yell:
-    description: Puts big red message on players screen.
-    usage: /yell <player> <message>
-    permission: admintoolbox.admin
+    description: Display a big red title message on a player's screen.
+    usage: /<command> <player> <message>
+    permission: admintoolbox.yell
     aliases: [ y ]
