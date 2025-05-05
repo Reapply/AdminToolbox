@@ -9,9 +9,9 @@ import org.modernbeta.admintoolbox.tools.Freeze;
 
 import javax.annotation.Nullable;
 
-public final class AdminToolbox extends JavaPlugin implements Listener {
+public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
 
-    static AdminToolbox instance;
+    static AdminToolboxPlugin instance;
     AdminManager adminManager = new AdminManager();
 
     Freeze freeze = new Freeze();
@@ -45,7 +45,7 @@ public final class AdminToolbox extends JavaPlugin implements Listener {
         this.blueMap = null;
     }
 
-    public static AdminToolbox getInstance()
+    public static AdminToolboxPlugin getInstance()
     {
         return instance;
     }

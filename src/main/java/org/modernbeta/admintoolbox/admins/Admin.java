@@ -3,7 +3,7 @@ package org.modernbeta.admintoolbox.admins;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.modernbeta.admintoolbox.AdminToolbox;
+import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public class Admin
 {
-    AdminToolbox plugin = AdminToolbox.getInstance();
+    AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
     Player adminPlayer;
     AdminState adminState;
     ItemStack[] savedPriorInventory;
@@ -115,7 +115,7 @@ public class Admin
 
             setAdminState(AdminState.SPECTATING);
             Location finalTargetLocation = targetLocation;
-            adminPlayer.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
+            adminPlayer.getScheduler().runDelayed(AdminToolboxPlugin.getInstance(), (task) -> {
                 adminPlayer.teleportAsync(finalTargetLocation); // tp to self so player goes to ground (tick later,
                 // doesn't TP otherwise)
             }, null, 2L);
@@ -177,7 +177,7 @@ public class Admin
 
 
                 // reveal the admin player by setting their gamemode to survival
-                adminPlayer.getScheduler().runDelayed(AdminToolbox.getInstance(), (task) -> {
+                adminPlayer.getScheduler().runDelayed(AdminToolboxPlugin.getInstance(), (task) -> {
                     adminPlayer.setGameMode(GameMode.SURVIVAL);
                 }, null, 1L);
 
