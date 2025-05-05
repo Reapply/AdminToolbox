@@ -27,8 +27,8 @@ public class Admin
         this.adminPlayer = adminPlayer;
         setAdminState(AdminState.FREEROAM);
 
-        if (plugin.blueMap != null) {
-            savedMapVisibility = plugin.blueMap.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
+        if (plugin.getBlueMap() != null) {
+            savedMapVisibility = plugin.getBlueMap().getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
         }
     }
 
@@ -153,8 +153,8 @@ public class Admin
             case SPECTATING:
                 if (previousAdminState.equals(AdminState.FREEROAM)) {
                     savePriorData();
-                    if (plugin.blueMap != null)
-                        plugin.blueMap.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), false);
+                    if (plugin.getBlueMap() != null)
+                        plugin.getBlueMap().getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), false);
                 }
                 adminPlayer.setGameMode(GameMode.SPECTATOR);
                 break;
@@ -200,8 +200,8 @@ public class Admin
         savedPriorInventory = adminPlayer.getInventory().getContents();
         adminPlayer.getInventory().clear();
 
-        if (plugin.blueMap != null) {
-            this.savedMapVisibility = plugin.blueMap.getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
+        if (plugin.getBlueMap() != null) {
+            this.savedMapVisibility = plugin.getBlueMap().getWebApp().getPlayerVisibility(adminPlayer.getUniqueId());
         }
     }
 
@@ -214,9 +214,9 @@ public class Admin
         if (savedPriorInventory != null) adminPlayer.getInventory().setContents(savedPriorInventory);
         savedPriorInventory = null;
 
-        if (plugin.blueMap != null && savedMapVisibility != null) {
+        if (plugin.getBlueMap() != null && savedMapVisibility != null) {
             plugin.getLogger().info("Restoring old visibility of " + savedMapVisibility);
-            plugin.blueMap.getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), savedMapVisibility);
+            plugin.getBlueMap().getWebApp().setPlayerVisibility(adminPlayer.getUniqueId(), savedMapVisibility);
         }
     }
 

@@ -19,7 +19,7 @@ public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
     Freeze freeze = new Freeze();
 
     @Nullable
-    public BlueMapAPI blueMap = null;
+    BlueMapAPI blueMap = null;
 
     @Override
     public void onEnable() {
@@ -54,5 +54,10 @@ public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
 
     public AdminManager getAdminManager() {
         return adminManager;
+    }
+
+    @Nullable
+    public BlueMapAPI getBlueMap() {
+        return blueMap;
     }
 }
