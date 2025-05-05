@@ -3,6 +3,7 @@ package org.modernbeta.admintoolbox;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.admins.AdminManager;
 import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.tools.Freeze;
@@ -10,11 +11,13 @@ import org.modernbeta.admintoolbox.tools.Freeze;
 import javax.annotation.Nullable;
 
 public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
+    private static AdminToolboxPlugin instance;
 
-    static AdminToolboxPlugin instance;
+    @NotNull
     AdminManager adminManager = new AdminManager();
-
+    @NotNull
     Freeze freeze = new Freeze();
+
     @Nullable
     public BlueMapAPI blueMap = null;
 
@@ -45,8 +48,7 @@ public final class AdminToolboxPlugin extends JavaPlugin implements Listener {
         this.blueMap = null;
     }
 
-    public static AdminToolboxPlugin getInstance()
-    {
+    public static AdminToolboxPlugin getInstance() {
         return instance;
     }
 
