@@ -100,24 +100,30 @@ public class AdminManager implements Listener {
 		TeleportHistory<Location> history = Objects.requireNonNull(getTeleportHistory(admin));
 		Location originalLocation = history.getOriginalLocation();
 
-		admin.teleportAsync(originalLocation).thenAccept((didTeleport) -> {
-			if (!didTeleport) {
-				admin.sendRichMessage("<red>Error: Could not teleport you back to your original location.");
-				throw new RuntimeException("Could not teleport \"" + admin.getName() + "\" back to their original location! This is a bug.");
-			}
+		admin.getScheduler().run(plugin, (task) -> {
+			admin.teleportAsync(originalLocation).thenAccept((didTeleport) -> {
+				if (!didTeleport) {
+					admin.sendRichMessage("<red>Error: Could not teleport you back to your original location.");
+					throw new RuntimeException("Could not teleport \"" + admin.getName() + "\" back to their original location! This is a bug.");
+				}
 
-			admin.setGameMode(GameMode.SURVIVAL);
-			admin.getInventory().setContents(originalInventory);
-			activeAdmins.remove(uuid);
-			teleportHistories.remove(uuid);
-			savedInventories.remove(uuid);
+				admin.setGameMode(GameMode.SURVIVAL);
+				admin.getInventory().setContents(originalInventory);
+				activeAdmins.remove(uuid);
+				teleportHistories.remove(uuid);
+				savedInventories.remove(uuid);
 
-			BlueMapAPI.getInstance().ifPresent((blueMap) -> {
-				Optional.ofNullable(savedMapVisibilities.get(admin.getUniqueId()))
-					.ifPresent((visibility) -> {
-						blueMap.getWebApp().setPlayerVisibility(admin.getUniqueId(), visibility);
-					});
+				BlueMapAPI.getInstance().ifPresent((blueMap) -> {
+					Optional.ofNullable(savedMapVisibilities.get(admin.getUniqueId()))
+						.ifPresent((visibility) -> {
+							blueMap.getWebApp().setPlayerVisibility(admin.getUniqueId(), visibility);
+						});
+				});
 			});
+		}, () -> {
+			// TODO: gracefully handle this situation. this will execute on logout when
+			// TODO:	the player's original location is unloaded.
+			throw new RuntimeException("Tried to restore a retired player! This is a bug.");
 		});
 	}
 
