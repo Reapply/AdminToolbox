@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -61,7 +63,9 @@ public class YellCommand implements CommandExecutor {
 						.color(NamedTextColor.RED)
 						.append(ampersandSerializer.deserialize(subtitleText));
 			} else {
-				titleComponent = ampersandSerializer.deserialize(fullMessage);
+				titleComponent = Component.empty()
+					.color(NamedTextColor.RED)
+					.append(ampersandSerializer.deserialize(fullMessage));
 			}
 		}
 
@@ -75,7 +79,7 @@ public class YellCommand implements CommandExecutor {
 					.append(subtitleComponent);
 			}
 
-			Component broadcastMessage = MiniMessage.miniMessage().deserialize("<gold><admin> yelled at <target>:\n<title>",
+			Component broadcastMessage = MiniMessage.miniMessage().deserialize("<gold><admin> yelled at <target>: <title>",
 				Placeholder.unparsed("admin", sender.getName()),
 				Placeholder.unparsed("target", target.getName()),
 				Placeholder.component("title", feedbackTitle)
@@ -84,7 +88,7 @@ public class YellCommand implements CommandExecutor {
 				.excluding(sender, target)
 				.sendMessage(broadcastMessage);
 
-			sender.sendRichMessage("<gold>Yelled at <target>:\n<title>",
+			sender.sendRichMessage("<gold>Yelled at <target>: <title>",
 				Placeholder.unparsed("target", target.getName()),
 				Placeholder.component("title", feedbackTitle)
 			);
