@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.managers.admin.AdminState.TeleportHistory;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -180,10 +179,15 @@ public class AdminManager implements Listener {
 		targetEvent.setCancelled(true);
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	void onAdminHurt(EntityDamageEvent damageEvent) {
 		if (!(damageEvent.getEntity() instanceof Player player)) return;
 		if (!isActiveAdmin(player)) return;
+		// allow PVP damage to actually affect health
+		// TODO: make this togglable, it's hardcoded for now for our use on Modern Beta
+		if (damageEvent.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
+			&& damageEvent.getDamageSource().getCausingEntity() instanceof Player) return;
 		damageEvent.setDamage(0.0);
 	}
 
