@@ -27,11 +27,12 @@ public class AdminToolboxPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(freezeManager, this);
 
-		getCommand("freeze").setExecutor(new FreezeCommand());
-		getCommand("unfreeze").setExecutor(new UnfreezeCommand());
 		getCommand("target").setExecutor(new TargetCommand());
+		getCommand("reveal").setExecutor(new RevealCommand());
 		getCommand("back").setExecutor(new GoBackCommand());
 		getCommand("forward").setExecutor(new GoForwardCommand());
+		getCommand("freeze").setExecutor(new FreezeCommand());
+		getCommand("unfreeze").setExecutor(new UnfreezeCommand());
 
         getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
     }

@@ -1,8 +1,7 @@
 package org.modernbeta.admintoolbox.managers;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -11,6 +10,7 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class AdminManager implements Listener {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
@@ -51,11 +51,30 @@ public class AdminManager implements Listener {
 	}
 
 	public void reveal(Player admin) {
+		reveal(admin, true);
+	}
+
+	public void reveal(Player admin, boolean getSafeLocation) {
 		if (!isActiveAdmin(admin))
 			throw new RuntimeException("Tried to reveal \"" + admin.getName() + "\", who was not spectating! This is a bug.");
 
-		// TODO: get safe location below player
-		// TODO: teleport to safe location and switch to Survival mode
+		CompletableFuture<Location> locationFuture;
+		if (getSafeLocation) {
+			locationFuture = getNextLowestSafeLocation(admin.getLocation());
+		} else {
+			locationFuture = CompletableFuture.completedFuture(admin.getLocation());
+		}
+
+		locationFuture.thenAccept((location) -> {
+			// TODO: teleport to safe location and switch to Survival mode
+			admin.teleportAsync(location).thenAccept((didTeleport) -> {
+				if (!didTeleport)
+					throw new RuntimeException("Couldn't teleport player \"" + admin.getName() + "\" for reveal! This is a bug.");
+
+				admin.setGameMode(GameMode.SURVIVAL);
+				activeAdmins.put(admin.getUniqueId(), ActiveAdminState.REVEALED);
+			});
+		});
 	}
 
 	public void restore(Player admin) {
@@ -99,6 +118,34 @@ public class AdminManager implements Listener {
 	@Nullable
 	public TeleportHistory<Location> getTeleportHistory(Player admin) {
 		return teleportHistories.get(admin.getUniqueId());
+	}
+
+	private CompletableFuture<Location> getNextLowestSafeLocation(Location location) {
+		CompletableFuture<Location> safeLocationFuture = new CompletableFuture<>();
+		final int LOWEST_BLOCK_Y = 0;
+
+		Bukkit.getRegionScheduler().run(plugin, location, (task) -> {
+			Location safeLocation = location.clone();
+
+			for (int y = location.getBlockY(); y > LOWEST_BLOCK_Y; y--) {
+				safeLocation.setY(y);
+				Block block = location.getWorld().getBlockAt(safeLocation);
+				if (!block.getType().isSolid()) continue;
+				if (Tag.FENCES.isTagged(block.getType()) || Tag.WALLS.isTagged(block.getType())) {
+					safeLocation.add(0.5, 1.5, 0.5);
+				} else {
+					safeLocation.add(0.5, 1.0, 0.5);
+				}
+
+				safeLocationFuture.complete(safeLocation);
+				return;
+			}
+
+			// if we couldn't find a safe location, complete with the original location
+			safeLocationFuture.complete(location);
+		});
+
+		return safeLocationFuture;
 	}
 
 	public enum ActiveAdminState {
