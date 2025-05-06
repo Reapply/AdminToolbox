@@ -2,8 +2,14 @@ package org.modernbeta.admintoolbox.managers;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
@@ -146,6 +152,29 @@ public class AdminManager implements Listener {
 		});
 
 		return safeLocationFuture;
+	}
+
+	@EventHandler
+	void onEntityTargetAdmin(EntityTargetEvent event) {
+		// if YOU attacked it, it can target you :)
+		if (!(event.getEntity() instanceof LivingEntity)) return;
+		if (!(event.getTarget() instanceof Player player)) return;
+		if (!isActiveAdmin(player)) return;
+		event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void onAdminHurt(EntityDamageEvent event) {
+		if (!(event.getEntity() instanceof Player player)) return;
+		if (!isActiveAdmin(player)) return;
+		event.setDamage(0.0);
+	}
+
+	@EventHandler
+	void onAdminDeath(PlayerDeathEvent event) {
+		Player player = event.getPlayer();
+		if (!isActiveAdmin(player)) return;
+		event.setCancelled(true);
 	}
 
 	public enum ActiveAdminState {
