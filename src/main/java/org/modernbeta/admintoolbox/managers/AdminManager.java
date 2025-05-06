@@ -39,6 +39,7 @@ public class AdminManager implements Listener {
 
 			BlueMapAPI.getInstance().ifPresent((blueMap) -> {
 				savedMapVisibilities.put(admin.getUniqueId(), blueMap.getWebApp().getPlayerVisibility(admin.getUniqueId()));
+				blueMap.getWebApp().setPlayerVisibility(admin.getUniqueId(), false);
 			});
 		} else if (appending) {
 			TeleportHistory<Location> history = getTeleportHistory(admin);
