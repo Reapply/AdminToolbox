@@ -106,27 +106,49 @@ public class AdminManager implements Listener {
 	}
 
 	public static class TeleportHistory<T extends Location> {
-		private final List<T> locations = new ArrayList<>();
+		private final List<T> backLocations = new ArrayList<>();
+		private final List<T> forwardLocations = new ArrayList<>();
 		private T originalLocation = null;
 
 		public void add(T location) {
 			if (originalLocation == null) {
 				originalLocation = location;
 			} else {
-				locations.add(location);
+				backLocations.add(location);
+				forwardLocations.clear();
 			}
 		}
 
 		@Nullable
 		public T goBack() {
-			if (locations.isEmpty())
+			if (backLocations.isEmpty())
 				return null;
 
-			return locations.removeLast();
+			T previousLocation = backLocations.removeLast();
+			forwardLocations.add(previousLocation);
+			return previousLocation;
+		}
+
+		@Nullable
+		public T goForward() {
+			if (forwardLocations.isEmpty())
+				return null;
+
+			T nextLocation = forwardLocations.removeLast();
+			backLocations.add(nextLocation);
+			return nextLocation;
 		}
 
 		public T getOriginalLocation() {
 			return originalLocation;
+		}
+
+		public boolean canGoBack() {
+			return !backLocations.isEmpty();
+		}
+
+		public boolean canGoForward() {
+			return !forwardLocations.isEmpty();
 		}
 	}
 }
