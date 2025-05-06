@@ -12,6 +12,8 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
 import org.modernbeta.admintoolbox.managers.PlayerFreezeManager;
 
+import java.util.Optional;
+
 public class FreezeCommand implements CommandExecutor {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
@@ -26,7 +28,9 @@ public class FreezeCommand implements CommandExecutor {
 		if(target == null || !target.isOnline()) {
 			sender.sendRichMessage(
 				"<red>Error: Player <gray><name></gray> is not online.",
-				Placeholder.unparsed("name", (target != null) ? target.getName() : args[0])
+				Placeholder.unparsed("name", Optional.ofNullable(target)
+					.map(Player::getName)
+					.orElse(args[0]))
 			);
 			return true;
 		}
