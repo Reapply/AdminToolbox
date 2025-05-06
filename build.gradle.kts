@@ -1,5 +1,6 @@
 plugins {
 	id("java")
+	id("com.github.johnrengelman.shadow") version "8.1.1"
 	id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
@@ -40,6 +41,10 @@ runPaper.folia.registerTask {
 		modrinth("bluemap", "5.5-paper")
 
 	}
+}
+
+tasks.build {
+	dependsOn("shadowJar")
 }
 
 tasks.processResources {
