@@ -68,3 +68,8 @@ To unfreeze a player, use `/unfreeze <player>`
 | `admintoolbox.broadcast.receive` |                     | Receive alerts about other admins' actions  |
 | `admintoolbox.broadcast.exempt`  |                     | Actions will not alert other admins         |
 | `admintoolbox.admin`             |                     | Access to all AdminToolbox features         |
+
+## Integrations
+
+- **[BlueMap](https://bluemap.bluecolored.de):**
+  On servers with BlueMap, the plugin will hide admins who are [revealed](#reveal) from the map.
