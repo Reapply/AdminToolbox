@@ -15,13 +15,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerFreezeManager implements Listener {
 	AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
-	ArrayList<UUID> frozenPlayers = new ArrayList<>();
+	Set<UUID> frozenPlayers = new HashSet<>();
 
 	public void freeze(Player player) {
 		// TODO: maybe show a freeze effect on screen?
