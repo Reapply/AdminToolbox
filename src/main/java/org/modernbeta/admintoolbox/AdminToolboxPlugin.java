@@ -2,16 +2,17 @@ package org.modernbeta.admintoolbox;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.commands.FreezeCommand;
+import org.modernbeta.admintoolbox.commands.GoBackCommand;
 import org.modernbeta.admintoolbox.commands.TargetCommand;
 import org.modernbeta.admintoolbox.commands.UnfreezeCommand;
-import org.modernbeta.admintoolbox.managers.AdminPlayerManager;
+import org.modernbeta.admintoolbox.managers.AdminManager;
 import org.modernbeta.admintoolbox.managers.PlayerFreezeManager;
 
 @SuppressWarnings("UnstableApiUsage")
 public class AdminToolboxPlugin extends JavaPlugin {
     static AdminToolboxPlugin instance;
 
-	AdminPlayerManager adminManager;
+	AdminManager adminManager;
     PlayerFreezeManager freezeManager;
 
 	PermissionAudience broadcastAudience;
@@ -22,7 +23,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-		this.adminManager = new AdminPlayerManager();
+		this.adminManager = new AdminManager();
         this.freezeManager = new PlayerFreezeManager();
 
 		this.broadcastAudience = new PermissionAudience(BROADCAST_AUDIENCE_PERMISSION);
@@ -32,6 +33,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		getCommand("freeze").setExecutor(new FreezeCommand());
 		getCommand("unfreeze").setExecutor(new UnfreezeCommand());
 		getCommand("target").setExecutor(new TargetCommand());
+		getCommand("back").setExecutor(new GoBackCommand());
 
         getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
     }
@@ -48,7 +50,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		return instance;
 	}
 
-	public AdminPlayerManager getAdminManager() {
+	public AdminManager getAdminManager() {
 		return adminManager;
 	}
 

@@ -7,28 +7,32 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class AdminPlayerManager implements Listener {
+public class AdminManager implements Listener {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	Map<UUID, ActiveAdminState> activeAdmins = new HashMap<>();
 
 	Map<UUID, ItemStack[]> savedInventories = new HashMap<>();
-	Map<UUID, TeleportHistory> teleportHistories = new HashMap<>();
+	Map<UUID, TeleportHistory<Location>> teleportHistories = new HashMap<>();
 
-	public void target(Player admin, Location location) {
-		if (isActiveAdmin(admin)) {
-			teleportHistories.get(admin.getUniqueId()).add(admin.getLocation().clone());
-		} else {
-			captureSnapshot(admin);
+	public void target(Player admin, Location location, boolean appending) {
+		if (!isActiveAdmin(admin)) {
+			savedInventories.put(admin.getUniqueId(), admin.getInventory().getContents());
+			admin.getInventory().clear();
+
+			TeleportHistory<Location> history = new TeleportHistory<>();
+			history.add(admin.getLocation().clone());
+			teleportHistories.put(admin.getUniqueId(), history);
+		} else if (appending) {
+			TeleportHistory<Location> history = getTeleportHistory(admin);
+			if (history != null) {
+				history.add(admin.getLocation().clone());
+			}
 		}
 
 		admin.teleportAsync(location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept((didTeleport) -> {
@@ -40,6 +44,10 @@ public class AdminPlayerManager implements Listener {
 			admin.setGameMode(GameMode.SPECTATOR);
 			activeAdmins.put(admin.getUniqueId(), ActiveAdminState.SPECTATING);
 		});
+	}
+
+	public void target(Player admin, Location location) {
+		target(admin, location, true);
 	}
 
 	public void reveal(Player admin) {
@@ -54,34 +62,24 @@ public class AdminPlayerManager implements Listener {
 		if (!isActiveAdmin(admin))
 			throw new RuntimeException("Tried to restore \"" + admin.getName() + "\", who was not in an admin state! This is a bug.");
 
-		restoreSnapshot(admin);
-		admin.setGameMode(GameMode.SURVIVAL);
-		activeAdmins.remove(admin.getUniqueId());
-	}
-
-	private void captureSnapshot(Player admin) {
-		savedInventories.put(admin.getUniqueId(), admin.getInventory().getContents());
-		teleportHistories.put(admin.getUniqueId(), new TeleportHistory(admin.getLocation().clone()));
-
-		admin.getInventory().clear();
-	}
-
-	private void restoreSnapshot(Player admin) {
 		UUID uuid = admin.getUniqueId();
-		TeleportHistory teleportHistory = teleportHistories.get(uuid);
 
 		ItemStack[] originalInventory = savedInventories.get(uuid);
-		Location originalLocation = teleportHistory.getOriginalLocation();
+
+		TeleportHistory<Location> history = Objects.requireNonNull(getTeleportHistory(admin));
+		Location originalLocation = history.getOriginalLocation();
 
 		admin.teleportAsync(originalLocation).thenAccept((didTeleport) -> {
 			if (!didTeleport) {
-				admin.sendRichMessage("Error: Could not teleport you back to your original location.");
-				throw new RuntimeException("Did not teleport \"" + admin.getName() + "\" to their original location. This is a bug!");
+				admin.sendRichMessage("<red>Error: Could not teleport you back to your original location.");
+				return;
 			}
 
 			admin.getInventory().setContents(originalInventory);
 		});
 
+		admin.setGameMode(GameMode.SURVIVAL);
+		activeAdmins.remove(uuid);
 		teleportHistories.remove(uuid);
 		savedInventories.remove(uuid);
 	}
@@ -98,48 +96,37 @@ public class AdminPlayerManager implements Listener {
 		return activeAdmins.containsKey(player.getUniqueId());
 	}
 
+	@Nullable
+	public TeleportHistory<Location> getTeleportHistory(Player admin) {
+		return teleportHistories.get(admin.getUniqueId());
+	}
+
 	public enum ActiveAdminState {
 		SPECTATING, REVEALED;
 	}
 
-	public static class TeleportHistory {
-		ArrayList<Location> locationHistory = new ArrayList<>();
-		int cursor = 0;
+	public static class TeleportHistory<T extends Location> {
+		private final List<T> locations = new ArrayList<>();
+		private T originalLocation = null;
 
-		public TeleportHistory(Location originalLocation) {
-			add(originalLocation);
+		public void add(T location) {
+			if (originalLocation == null) {
+				originalLocation = location;
+			} else {
+				locations.add(location);
+			}
 		}
 
 		@Nullable
-		public Location goBack() {
-			if (cursor > 0) {
-				cursor -= 1;
-				return locationHistory.get(cursor);
-			}
-			return null;
+		public T goBack() {
+			if (locations.isEmpty())
+				return null;
+
+			return locations.removeLast();
 		}
 
-		@Nullable
-		public Location goForward() {
-			if (cursor < (locationHistory.size() - 1)) {
-				cursor += 1;
-				return locationHistory.get(cursor);
-			}
-			return null;
-		}
-
-		@NotNull
-		Location getOriginalLocation() {
-			return locationHistory.getFirst();
-		}
-
-		void add(Location location) {
-			if (cursor < locationHistory.size()) {
-				locationHistory.subList(cursor, locationHistory.size()).clear();
-			}
-
-			locationHistory.add(location);
-			cursor = locationHistory.size() - 1;
+		public T getOriginalLocation() {
+			return originalLocation;
 		}
 	}
 }
