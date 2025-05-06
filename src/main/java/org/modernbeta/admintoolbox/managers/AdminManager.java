@@ -79,7 +79,6 @@ public class AdminManager implements Listener {
 		}
 
 		locationFuture.thenAccept((location) -> {
-			// TODO: teleport to safe location and switch to Survival mode
 			admin.teleportAsync(location).thenAccept((didTeleport) -> {
 				if (!didTeleport)
 					throw new RuntimeException("Couldn't teleport player \"" + admin.getName() + "\" for reveal! This is a bug.");
