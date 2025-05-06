@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "org.modernbeta.admintoolbox"
-version = "0.1"
+version = "1.0"
 
 repositories {
 	mavenCentral()
