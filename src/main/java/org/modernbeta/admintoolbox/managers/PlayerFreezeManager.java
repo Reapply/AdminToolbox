@@ -30,7 +30,6 @@ public class PlayerFreezeManager implements Listener {
 	}
 
 	public void unfreeze(OfflinePlayer player) {
-		// TODO: announce to admins & frozen player
 		frozenPlayers.remove(player.getUniqueId());
 	}
 
@@ -41,9 +40,6 @@ public class PlayerFreezeManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onFrozenPlayerMove(PlayerMoveEvent moveEvent) {
 		if (!isFrozen(moveEvent.getPlayer())) return;
-
-		// Allow players to look around and move DOWN on the Y axis
-		// to prevent glitchy and disorienting states on the client
 
 		Location from = moveEvent.getFrom();
 		Location to = moveEvent.getTo();
