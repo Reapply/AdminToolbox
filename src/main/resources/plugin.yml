@@ -73,4 +73,4 @@ commands:
     description: Display a big red title message on a player's screen.
     usage: /<command> <player> <message>
     permission: admintoolbox.yell
-    aliases: [ y ]
+    aliases: [ y, adminsay ]
