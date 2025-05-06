@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
+import org.modernbeta.admintoolbox.managers.PlayerFreezeManager;
 
 public class FreezeCommand implements CommandExecutor {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
@@ -23,12 +24,23 @@ public class FreezeCommand implements CommandExecutor {
 
 		Player target = Bukkit.getPlayer(args[0]);
 		if(target == null || !target.isOnline()) {
-			sender.sendRichMessage("<red>Error: Player <gray><name></gray> is not online.",
-				Placeholder.unparsed("name", args[0]));
+			sender.sendRichMessage(
+				"<red>Error: Player <gray><name></gray> is not online.",
+				Placeholder.unparsed("name", (target != null) ? target.getName() : args[0])
+			);
 			return true;
 		}
 
-		plugin.getFreezeManager().freeze(target);
+		PlayerFreezeManager freezeManager = plugin.getFreezeManager();
+
+		if (freezeManager.isFrozen(target)) {
+			sender.sendRichMessage(
+				"<red>Error: Player <gray><name></gray> is already frozen!",
+				Placeholder.unparsed("name", target.getName())
+			);
+			return true;
+		}
+		freezeManager.freeze(target);
 
 		target.sendRichMessage("<red>You have been frozen!");
 
