@@ -7,8 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
-import org.modernbeta.admintoolbox.managers.AdminManager;
-import org.modernbeta.admintoolbox.managers.AdminManager.TeleportHistory;
+import org.modernbeta.admintoolbox.managers.admin.AdminManager;
+import org.modernbeta.admintoolbox.managers.admin.AdminState;
 
 import java.util.Objects;
 
@@ -34,8 +34,8 @@ public class GoBackCommand implements CommandExecutor {
 			return true;
 		}
 
-		TeleportHistory<Location> history = Objects.requireNonNull(adminManager.getTeleportHistory(player));
-		Location previousLocation = history.goBack();
+		AdminState adminState = adminManager.getAdminState(player).orElseThrow();
+		Location previousLocation = adminState.getTeleportHistory().goBack();
 
 		if (previousLocation == null) {
 			adminManager.restore(player);

@@ -2,7 +2,7 @@ package org.modernbeta.admintoolbox;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.commands.*;
-import org.modernbeta.admintoolbox.managers.AdminManager;
+import org.modernbeta.admintoolbox.managers.admin.AdminManager;
 import org.modernbeta.admintoolbox.managers.FreezeManager;
 
 @SuppressWarnings("UnstableApiUsage")

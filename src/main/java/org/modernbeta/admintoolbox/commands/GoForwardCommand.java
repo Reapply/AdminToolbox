@@ -7,8 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
-import org.modernbeta.admintoolbox.managers.AdminManager;
-import org.modernbeta.admintoolbox.managers.AdminManager.TeleportHistory;
+import org.modernbeta.admintoolbox.managers.admin.AdminManager;
+import org.modernbeta.admintoolbox.managers.admin.AdminState;
 
 import java.util.Objects;
 
@@ -34,8 +34,8 @@ public class GoForwardCommand implements CommandExecutor {
 			return true;
 		}
 
-		TeleportHistory<Location> history = Objects.requireNonNull(adminManager.getTeleportHistory(player));
-		Location nextLocation = history.goForward();
+		AdminState adminState = adminManager.getAdminState(player).orElseThrow();
+		Location nextLocation = adminState.getTeleportHistory().goForward();
 
 		if (nextLocation == null) {
 			player.sendRichMessage("<red>Error: You are as far forward as you can go!");

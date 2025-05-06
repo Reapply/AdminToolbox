@@ -1,25 +1,12 @@
 package org.modernbeta.admintoolbox.commands;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
-import org.modernbeta.admintoolbox.PermissionAudience;
-import org.modernbeta.admintoolbox.managers.AdminManager;
-
-import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
+import org.modernbeta.admintoolbox.managers.admin.AdminManager;
 
 public class RevealCommand implements CommandExecutor {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
