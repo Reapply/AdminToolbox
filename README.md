@@ -2,6 +2,8 @@
 
 Effective Minecraft moderation tools focused on minimizing access to cheat features, ensuring staff integrity and community trust.
 
+**This plugin is designed to support Folia!**
+
 ## Commands
 
 ### Spectate
