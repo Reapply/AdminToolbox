@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
@@ -175,6 +176,14 @@ public class AdminManager implements Listener {
 		Player player = deathEvent.getPlayer();
 		if (!isActiveAdmin(player)) return;
 		deathEvent.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void onAdminQuit(PlayerQuitEvent quitEvent) {
+		// TODO: teleport back to original location when they log back in. there is a known bug
+		// TODO:	where admins will be back in survival with original inventory when if they log
+		// TODO:	out while in spectator mode! this is a potential cheat!
+		restore(quitEvent.getPlayer());
 	}
 
 	public enum ActiveAdminState {
