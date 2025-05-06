@@ -24,6 +24,7 @@ permissions:
     description: Should receive broadcasts about actions by other admins.
   admintoolbox.broadcast.exempt:
     description: Admin actions should NOT broadcast to other admins.
+    default: false
   # Legacy catch-all admin permission. Children list is designed to be
   # backwards-compatible with previous versions of AdminToolbox.
   admintoolbox.admin:
