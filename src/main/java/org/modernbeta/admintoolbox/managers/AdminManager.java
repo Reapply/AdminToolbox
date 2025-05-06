@@ -1,5 +1,6 @@
 package org.modernbeta.admintoolbox.managers;
 
+import de.bluecolored.bluemap.api.BlueMapAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -24,6 +25,7 @@ public class AdminManager implements Listener {
 
 	Map<UUID, ActiveAdminState> activeAdmins = new HashMap<>();
 
+	Map<UUID, Boolean> savedMapVisibilities = new HashMap<>();
 	Map<UUID, ItemStack[]> savedInventories = new HashMap<>();
 	Map<UUID, TeleportHistory<Location>> teleportHistories = new HashMap<>();
 
@@ -32,9 +34,12 @@ public class AdminManager implements Listener {
 			savedInventories.put(admin.getUniqueId(), admin.getInventory().getContents());
 			admin.getInventory().clear();
 
-			TeleportHistory<Location> history = new TeleportHistory<>();
-			history.add(admin.getLocation().clone());
+			TeleportHistory<Location> history = new TeleportHistory<>(admin.getLocation().clone());
 			teleportHistories.put(admin.getUniqueId(), history);
+
+			BlueMapAPI.getInstance().ifPresent((blueMap) -> {
+				savedMapVisibilities.put(admin.getUniqueId(), blueMap.getWebApp().getPlayerVisibility(admin.getUniqueId()));
+			});
 		} else if (appending) {
 			TeleportHistory<Location> history = getTeleportHistory(admin);
 			if (history != null) {
@@ -106,6 +111,13 @@ public class AdminManager implements Listener {
 			activeAdmins.remove(uuid);
 			teleportHistories.remove(uuid);
 			savedInventories.remove(uuid);
+
+			BlueMapAPI.getInstance().ifPresent((blueMap) -> {
+				Optional.ofNullable(savedMapVisibilities.get(admin.getUniqueId()))
+					.ifPresent((visibility) -> {
+						blueMap.getWebApp().setPlayerVisibility(admin.getUniqueId(), visibility);
+					});
+			});
 		});
 	}
 
@@ -194,13 +206,13 @@ public class AdminManager implements Listener {
 		private final List<T> forwardLocations = new ArrayList<>();
 		private T originalLocation = null;
 
+		public TeleportHistory(T originalLocation) {
+			this.originalLocation = originalLocation;
+		}
+
 		public void add(T location) {
-			if (originalLocation == null) {
-				originalLocation = location;
-			} else {
-				backLocations.add(location);
-				forwardLocations.clear();
-			}
+			backLocations.add(location);
+			forwardLocations.clear();
 		}
 
 		@Nullable
