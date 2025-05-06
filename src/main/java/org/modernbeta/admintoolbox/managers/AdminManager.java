@@ -155,26 +155,26 @@ public class AdminManager implements Listener {
 	}
 
 	@EventHandler
-	void onEntityTargetAdmin(EntityTargetEvent event) {
+	void onEntityTargetAdmin(EntityTargetEvent targetEvent) {
 		// if YOU attacked it, it can target you :)
-		if (!(event.getEntity() instanceof LivingEntity)) return;
-		if (!(event.getTarget() instanceof Player player)) return;
+		if (!(targetEvent.getEntity() instanceof LivingEntity)) return;
+		if (!(targetEvent.getTarget() instanceof Player player)) return;
 		if (!isActiveAdmin(player)) return;
-		event.setCancelled(true);
+		targetEvent.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	void onAdminHurt(EntityDamageEvent event) {
-		if (!(event.getEntity() instanceof Player player)) return;
+	void onAdminHurt(EntityDamageEvent damageEvent) {
+		if (!(damageEvent.getEntity() instanceof Player player)) return;
 		if (!isActiveAdmin(player)) return;
-		event.setDamage(0.0);
+		damageEvent.setDamage(0.0);
 	}
 
-	@EventHandler
-	void onAdminDeath(PlayerDeathEvent event) {
-		Player player = event.getPlayer();
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void onAdminDeath(PlayerDeathEvent deathEvent) {
+		Player player = deathEvent.getPlayer();
 		if (!isActiveAdmin(player)) return;
-		event.setCancelled(true);
+		deathEvent.setCancelled(true);
 	}
 
 	public enum ActiveAdminState {
