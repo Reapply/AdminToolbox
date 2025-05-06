@@ -98,16 +98,15 @@ public class AdminManager implements Listener {
 		admin.teleportAsync(originalLocation).thenAccept((didTeleport) -> {
 			if (!didTeleport) {
 				admin.sendRichMessage("<red>Error: Could not teleport you back to your original location.");
-				return;
+				throw new RuntimeException("Could not teleport \"" + admin.getName() + "\" back to their original location! This is a bug.");
 			}
 
+			admin.setGameMode(GameMode.SURVIVAL);
 			admin.getInventory().setContents(originalInventory);
+			activeAdmins.remove(uuid);
+			teleportHistories.remove(uuid);
+			savedInventories.remove(uuid);
 		});
-
-		admin.setGameMode(GameMode.SURVIVAL);
-		activeAdmins.remove(uuid);
-		teleportHistories.remove(uuid);
-		savedInventories.remove(uuid);
 	}
 
 	public boolean isSpectating(OfflinePlayer player) {
