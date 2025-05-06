@@ -53,10 +53,12 @@ commands:
     description: Teleports an admin to their previous teleported location
     usage: /<command>
     permission: admintoolbox.target
+    aliases: [ last, previous, prev ]
   forward:
     description: Teleports an admin back to where they were before their previous /back
     usage: /<command>
     permission: admintoolbox.target
+    aliases: [ next ]
   freeze:
     description: Stops a given player from moving.
     usage: /<command> <player>
