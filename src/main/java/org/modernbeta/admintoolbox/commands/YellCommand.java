@@ -50,9 +50,8 @@ public class YellCommand implements CommandExecutor {
 			LegacyComponentSerializer ampersandSerializer = LegacyComponentSerializer.legacyAmpersand();
 
 			int separatorIndex = fullMessage.indexOf('|');
-			String titleText;
 			if (separatorIndex != -1) {
-				titleText = fullMessage.substring(0, separatorIndex).trim();
+				String titleText = fullMessage.substring(0, separatorIndex).trim();
 				String subtitleText = fullMessage.substring(separatorIndex + 1).trim();
 
 				titleComponent = Component.empty()
