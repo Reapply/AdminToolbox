@@ -122,6 +122,13 @@ public class AdminManager implements Listener {
 		});
 	}
 
+	public void restoreAll() {
+		for(UUID adminId : activeAdmins.keySet()) {
+			Player admin = Bukkit.getPlayer(adminId);
+			restore(admin);
+		}
+	}
+
 	public boolean isSpectating(OfflinePlayer player) {
 		return activeAdmins.get(player.getUniqueId()) == ActiveAdminState.SPECTATING;
 	}
