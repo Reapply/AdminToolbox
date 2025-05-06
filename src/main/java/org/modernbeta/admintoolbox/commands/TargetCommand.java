@@ -16,7 +16,7 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -55,7 +55,11 @@ public class TargetCommand implements CommandExecutor {
 						if (!offlineTarget.isOnline()) {
 							targetLabel.set(targetLabel.get() + " (offline player)");
 						}
-						targetLocationFuture.complete(offlineTarget.getLocation());
+						Location location = offlineTarget.getLocation();
+						if (location == null) {
+							throw new IllegalArgumentException("Player '" + targetPlayerName + "' has no location data.");
+						}
+						targetLocationFuture.complete(location);
 					} catch (Exception e) {
 						targetLocationFuture.completeExceptionally(e);
 					}
@@ -70,6 +74,12 @@ public class TargetCommand implements CommandExecutor {
 					highestLocationFuture.thenAccept((highestLocation) -> {
 						targetLabel.set(prettifyCoordinates(highestLocation));
 						targetLocationFuture.complete(highestLocation);
+					}).exceptionally(ex -> {
+						targetLocationFuture.completeExceptionally(
+							new IllegalArgumentException(
+								String.format("Could not find a safe location at %d, %d in %s.", x, z, player.getWorld().getName()))
+						);
+						return null;
 					});
 				} catch (Exception e) {
 					targetLocationFuture.completeExceptionally(e);
@@ -93,14 +103,30 @@ public class TargetCommand implements CommandExecutor {
 						int x = Integer.parseInt(args[0]);
 						int z = Integer.parseInt(args[1]);
 
-						CompletableFuture<Location> highestLocationFuture = getHighestLocation(Objects.requireNonNull(resolveWorld(args[2])), x, z);
+						World world = resolveWorld(args[2]);
+						if (world == null) {
+							targetLocationFuture.completeExceptionally(
+								new IllegalArgumentException("Could not find world '" + args[2] + "'.")
+							);
+							break;
+						}
+
+						CompletableFuture<Location> highestLocationFuture = getHighestLocation(world, x, z);
 						highestLocationFuture.thenAccept((highestLocation) -> {
 							targetLabel.set(prettifyCoordinates(highestLocation));
 							targetLocationFuture.complete(highestLocation);
+						}).exceptionally(ex -> {
+							targetLocationFuture.completeExceptionally(
+								new IllegalArgumentException(
+									String.format("Could not find a safe location at %d, %d in %s.", x, z, world.getName()))
+							);
+							return null;
 						});
 					} catch (Exception ex) {
 						targetLocationFuture.completeExceptionally(ex);
 					}
+				} catch (Exception e) {
+					targetLocationFuture.completeExceptionally(e);
 				}
 			}
 			case 4 -> {
@@ -108,7 +134,14 @@ public class TargetCommand implements CommandExecutor {
 					int x = Integer.parseInt(args[0]);
 					int y = Integer.parseInt(args[1]);
 					int z = Integer.parseInt(args[2]);
-					World world = Objects.requireNonNull(resolveWorld(args[3]));
+
+					World world = resolveWorld(args[3]);
+					if (world == null) {
+						targetLocationFuture.completeExceptionally(
+							new IllegalArgumentException("Could not find world '" + args[3] + "'.")
+						);
+						break;
+					}
 
 					Location targetLocation = new Location(world, x, y, z);
 					targetLabel.set(prettifyCoordinates(targetLocation));
@@ -140,7 +173,24 @@ public class TargetCommand implements CommandExecutor {
 					));
 			}
 		})).exceptionally(ex -> {
-			sender.sendRichMessage("<red>Error: Couldn't use that location.");
+			Throwable cause = ex.getCause();
+			switch (cause) {
+				case NumberFormatException exception ->
+					sender.sendRichMessage("<red>Error: Couldn't parse coordinates: " + exception.getMessage());
+				case IllegalArgumentException exception ->
+					sender.sendRichMessage("<red>Error: " + exception.getMessage());
+				case NullPointerException exception -> {
+					if (args.length == 1) {
+						sender.sendRichMessage("<red>Error: Could not find player '" + args[0] + "'.");
+					} else {
+						sender.sendRichMessage("<red>Error: " + Optional.of(exception.getMessage()).orElse("Target location not found."));
+					}
+				}
+				case null, default -> {
+					sender.sendRichMessage("<red>Error: Couldn't use that location.");
+					plugin.getLogger().warning("Error in /target command: " + ex.getMessage());
+				}
+			}
 			return null;
 		});
 
