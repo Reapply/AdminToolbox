@@ -1,10 +1,7 @@
 package org.modernbeta.admintoolbox;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.modernbeta.admintoolbox.commands.FreezeCommand;
-import org.modernbeta.admintoolbox.commands.GoBackCommand;
-import org.modernbeta.admintoolbox.commands.TargetCommand;
-import org.modernbeta.admintoolbox.commands.UnfreezeCommand;
+import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.managers.AdminManager;
 import org.modernbeta.admintoolbox.managers.PlayerFreezeManager;
 
@@ -34,6 +31,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		getCommand("unfreeze").setExecutor(new UnfreezeCommand());
 		getCommand("target").setExecutor(new TargetCommand());
 		getCommand("back").setExecutor(new GoBackCommand());
+		getCommand("forward").setExecutor(new GoForwardCommand());
 
         getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
     }
