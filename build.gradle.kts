@@ -25,8 +25,8 @@ repositories {
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("de.bluecolored:bluemap-api:2.7.4")
 	compileOnly("com.github.LeonMangler:SuperVanish:6.2.18-3")
+	implementation("de.bluecolored:bluemap-api:2.7.4")
 }
 
 java {
@@ -39,7 +39,6 @@ runPaper.folia.registerTask {
 	downloadPlugins {
 		modrinth("viaversion", "5.3.2") // makes testing much easier
 		modrinth("bluemap", "5.5-paper")
-
 	}
 }
 
