@@ -3,14 +3,14 @@ package org.modernbeta.admintoolbox;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.managers.AdminManager;
-import org.modernbeta.admintoolbox.managers.PlayerFreezeManager;
+import org.modernbeta.admintoolbox.managers.FreezeManager;
 
 @SuppressWarnings("UnstableApiUsage")
 public class AdminToolboxPlugin extends JavaPlugin {
     static AdminToolboxPlugin instance;
 
 	AdminManager adminManager;
-    PlayerFreezeManager freezeManager;
+    FreezeManager freezeManager;
 
 	PermissionAudience broadcastAudience;
 
@@ -21,7 +21,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
         instance = this;
 
 		this.adminManager = new AdminManager();
-        this.freezeManager = new PlayerFreezeManager();
+        this.freezeManager = new FreezeManager();
 
 		this.broadcastAudience = new PermissionAudience(BROADCAST_AUDIENCE_PERMISSION);
 
@@ -52,7 +52,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		return adminManager;
 	}
 
-	public PlayerFreezeManager getFreezeManager() {
+	public FreezeManager getFreezeManager() {
 		return freezeManager;
 	}
 

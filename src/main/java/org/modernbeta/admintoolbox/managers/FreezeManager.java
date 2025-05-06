@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class PlayerFreezeManager implements Listener {
+public class FreezeManager implements Listener {
 	AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	Set<UUID> frozenPlayers = new HashSet<>();

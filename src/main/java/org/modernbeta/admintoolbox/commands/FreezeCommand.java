@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
-import org.modernbeta.admintoolbox.managers.PlayerFreezeManager;
+import org.modernbeta.admintoolbox.managers.FreezeManager;
 
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ public class FreezeCommand implements CommandExecutor {
 			return true;
 		}
 
-		PlayerFreezeManager freezeManager = plugin.getFreezeManager();
+		FreezeManager freezeManager = plugin.getFreezeManager();
 
 		if (freezeManager.isFrozen(target)) {
 			sender.sendRichMessage(
