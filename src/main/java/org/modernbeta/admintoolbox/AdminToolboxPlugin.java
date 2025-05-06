@@ -33,6 +33,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		getCommand("forward").setExecutor(new GoForwardCommand());
 		getCommand("freeze").setExecutor(new FreezeCommand());
 		getCommand("unfreeze").setExecutor(new UnfreezeCommand());
+		getCommand("yell").setExecutor(new YellCommand());
 
         getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
     }
