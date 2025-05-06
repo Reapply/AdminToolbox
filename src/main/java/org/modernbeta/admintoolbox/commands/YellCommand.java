@@ -2,7 +2,9 @@ package org.modernbeta.admintoolbox.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -41,35 +43,56 @@ public class YellCommand implements CommandExecutor {
 		Component titleComponent;
 		Component subtitleComponent = null;
 
-		int separatorIndex = fullMessage.indexOf('|');
-		if (separatorIndex != -1) {
-			String titleText = fullMessage.substring(0, separatorIndex).trim();
-			String subtitleText = fullMessage.substring(separatorIndex + 1).trim();
+		// Prepare the title text components
+		{
+			LegacyComponentSerializer ampersandSerializer = LegacyComponentSerializer.legacyAmpersand();
 
-			titleComponent = Component.text(titleText, NamedTextColor.RED);
-			if (!subtitleText.isEmpty())
-				subtitleComponent = Component.text(subtitleText, NamedTextColor.RED);
-		} else {
-			titleComponent = Component.text(fullMessage, NamedTextColor.RED);
+			int separatorIndex = fullMessage.indexOf('|');
+			String titleText;
+			if (separatorIndex != -1) {
+				titleText = fullMessage.substring(0, separatorIndex).trim();
+				String subtitleText = fullMessage.substring(separatorIndex + 1).trim();
+
+				titleComponent = Component.empty()
+					.color(NamedTextColor.RED)
+					.append(ampersandSerializer.deserialize(titleText));
+				if (!subtitleText.isEmpty())
+					subtitleComponent = Component.empty()
+						.color(NamedTextColor.RED)
+						.append(ampersandSerializer.deserialize(subtitleText));
+			} else {
+				titleComponent = ampersandSerializer.deserialize(fullMessage);
+			}
 		}
 
-		Component feedbackSubtitle = Component.empty();
+		// Send command feedback & broadcast to other admins
+		{
+			Component feedbackTitle = titleComponent;
 
-		if (subtitleComponent != null) {
-			feedbackSubtitle = feedbackSubtitle
-				.appendNewline()
-				.append(subtitleComponent);
+			if (subtitleComponent != null) {
+				feedbackTitle = feedbackTitle
+					.appendNewline()
+					.append(subtitleComponent);
+			}
+
+			Component broadcastMessage = MiniMessage.miniMessage().deserialize("<gold><admin> yelled at <target>:\n<title>",
+				Placeholder.unparsed("admin", sender.getName()),
+				Placeholder.unparsed("target", target.getName()),
+				Placeholder.component("title", feedbackTitle)
+			);
+			plugin.getAdminAudience()
+				.excluding(sender, target)
+				.sendMessage(broadcastMessage);
+
+			sender.sendRichMessage("<gold>Yelled at <target>:\n<title>",
+				Placeholder.unparsed("target", target.getName()),
+				Placeholder.component("title", feedbackTitle)
+			);
 		}
-
-		sender.sendRichMessage("<gold>Yelled at <target>:\n<red><title><subtitle>",
-			Placeholder.unparsed("target", target.getName()),
-			Placeholder.component("title", titleComponent),
-			Placeholder.component("subtitle", feedbackSubtitle)
-		);
 
 		Title targetTitle = Title.title(
 			titleComponent,
-			subtitleComponent == null ? Component.empty() : subtitleComponent
+			Optional.ofNullable(subtitleComponent).orElse(Component.empty())
 		);
 
 		target.showTitle(targetTitle);
