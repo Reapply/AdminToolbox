@@ -129,14 +129,16 @@ public class TargetCommand implements CommandExecutor {
 				Placeholder.unparsed("target", targetLabel.get())
 			);
 
-			PermissionAudience adminAudience = plugin.getAdminAudience()
-				.excluding(player);
-			adminAudience
-				.sendMessage(MiniMessage.miniMessage().deserialize(
-					"<gold><admin> is spectating <target>",
-					Placeholder.unparsed("admin", sender.getName()),
-					Placeholder.unparsed("target", targetLabel.get())
-				));
+			if (!sender.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
+				PermissionAudience adminAudience = plugin.getAdminAudience()
+					.excluding(player);
+				adminAudience
+					.sendMessage(MiniMessage.miniMessage().deserialize(
+						"<gold><admin> is spectating <target>",
+						Placeholder.unparsed("admin", sender.getName()),
+						Placeholder.unparsed("target", targetLabel.get())
+					));
+			}
 		})).exceptionally(ex -> {
 			sender.sendRichMessage("<red>Error: Couldn't use that location.");
 			return null;

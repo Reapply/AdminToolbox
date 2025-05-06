@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -37,14 +38,12 @@ public class PermissionAudience implements ForwardingAudience.Single {
 		audience().sendMessage(message);
 	}
 
-	public @NotNull PermissionAudience excluding(Player... excludedPlayers) {
-		Set<UUID> excludedIds = new HashSet<>(excludedPlayers.length);
-		for (Player excluded : excludedPlayers) {
-			excludedIds.add(excluded.getUniqueId());
-		}
+	public @NotNull PermissionAudience excluding(Audience... excludedAudiences) {
+		Set<Audience> excludeds = new HashSet<>(excludedAudiences.length);
+		excludeds.addAll(Arrays.asList(excludedAudiences));
 
 		Predicate<Player> excludeFilter = player ->
-			!excludedIds.contains(player.getUniqueId());
+			!excludeds.contains(player);
 
 		return new PermissionAudience(filter.and(excludeFilter));
 	}

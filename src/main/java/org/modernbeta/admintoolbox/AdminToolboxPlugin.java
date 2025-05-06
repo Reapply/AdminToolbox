@@ -15,6 +15,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 	PermissionAudience broadcastAudience;
 
 	private static final String BROADCAST_AUDIENCE_PERMISSION = "admintoolbox.broadcast.receive";
+	public static final String BROADCAST_EXEMPT_PERMISSION = "admintoolbox.broadcast.exempt";
 
     @Override
     public void onEnable() {

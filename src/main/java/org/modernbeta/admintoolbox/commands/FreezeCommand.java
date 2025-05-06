@@ -48,14 +48,20 @@ public class FreezeCommand implements CommandExecutor {
 
 		target.sendRichMessage("<red>You have been frozen!");
 
-		PermissionAudience adminAudience = plugin.getAdminAudience();
-		if(sender instanceof Player adminPlayer) adminAudience = adminAudience.excluding(adminPlayer);
-		adminAudience
-			.sendMessage(MiniMessage.miniMessage().deserialize(
-				"<gold><admin> has frozen <target>!",
-				Placeholder.unparsed("admin", sender.getName()),
-				Placeholder.unparsed("target", target.getName())
-			));
+		if (!sender.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
+			PermissionAudience adminAudience = plugin.getAdminAudience().excluding(sender);
+			adminAudience
+				.sendMessage(MiniMessage.miniMessage().deserialize(
+					"<gold><admin> froze <target>!",
+					Placeholder.unparsed("admin", sender.getName()),
+					Placeholder.unparsed("target", target.getName())
+				));
+		}
+
+		sender.sendRichMessage(
+			"<gold>You froze <target>.",
+			Placeholder.unparsed("target", target.getName())
+		);
 
 		return true;
 	}

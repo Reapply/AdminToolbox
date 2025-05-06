@@ -34,14 +34,18 @@ public class UnfreezeCommand implements CommandExecutor {
 		if(target.isOnline())
 			((Player) target).sendRichMessage("<green>You were unfrozen!");
 
-		PermissionAudience adminAudience = plugin.getAdminAudience();
-		if(sender instanceof Player adminPlayer) adminAudience = adminAudience.excluding(adminPlayer);
-		adminAudience
-			.sendMessage(MiniMessage.miniMessage().deserialize(
-				"<gold><admin> unfroze <target>.",
-				Placeholder.unparsed("admin", sender.getName()),
-				Placeholder.unparsed("target", target.getName())
-			));
+		if (!sender.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
+			PermissionAudience adminAudience = plugin.getAdminAudience().excluding(sender);
+			adminAudience
+				.sendMessage(MiniMessage.miniMessage().deserialize(
+					"<gold><admin> unfroze <target>.",
+					Placeholder.unparsed("admin", sender.getName()),
+					Placeholder.unparsed("target", target.getName())
+				));
+		}
+
+		sender.sendRichMessage("<gold>You released <target>.",
+			Placeholder.unparsed("target", target.getName()));
 
 		return true;
 	}
