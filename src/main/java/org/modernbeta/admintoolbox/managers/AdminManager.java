@@ -207,6 +207,7 @@ public class AdminManager implements Listener {
 		// TODO: teleport back to original location when they log back in. there is a known bug
 		// TODO:	where admins will be back in survival with original inventory when if they log
 		// TODO:	out while in spectator mode! this is a potential cheat!
+		if (!plugin.getAdminManager().isActiveAdmin(quitEvent.getPlayer())) return;
 		restore(quitEvent.getPlayer());
 	}
 
