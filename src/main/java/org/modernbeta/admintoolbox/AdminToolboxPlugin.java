@@ -26,6 +26,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 
 		this.broadcastAudience = new PermissionAudience(BROADCAST_AUDIENCE_PERMISSION);
 
+        getServer().getPluginManager().registerEvents(adminManager, this);
         getServer().getPluginManager().registerEvents(freezeManager, this);
 
 		getCommand("target").setExecutor(new TargetCommand());
