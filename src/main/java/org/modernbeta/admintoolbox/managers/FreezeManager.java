@@ -1,6 +1,8 @@
 package org.modernbeta.admintoolbox.managers;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -12,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
@@ -37,6 +40,22 @@ public class FreezeManager implements Listener {
 	public List<OfflinePlayer> getFrozenPlayers() {
 		// fetch all offline players by their UUID key
 		return frozenPlayers.stream().map(Bukkit::getOfflinePlayer).toList();
+	}
+
+	@EventHandler
+	public void onFrozenPlayerJoin(PlayerJoinEvent joinEvent) {
+		Player player = joinEvent.getPlayer();
+		if (!isFrozen(player)) return;
+
+		Component adminBroadcast =
+			MiniMessage.miniMessage().deserialize("<aqua><player> is still frozen!",
+				Placeholder.unparsed("player", player.getName()));
+		plugin.getAdminAudience().sendMessage(adminBroadcast);
+
+		Component playerMessage =
+			MiniMessage.miniMessage().deserialize("<red>You are still frozen!");
+		player.sendActionBar(playerMessage);
+		player.sendMessage(playerMessage);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
