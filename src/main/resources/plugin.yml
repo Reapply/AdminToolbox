@@ -39,9 +39,9 @@ default-permission: op
 
 commands:
   spectate:
-    description: Enter spectator mode, optionally at a specific player or location.
+    description: Enter spectator mode, optionally at a specific player or coordinate location.
     usage: |
-      /<command> <player>
+      /<command> [player]
       /<command> <x> [y] <z> [world]
     permission: admintoolbox.target
     aliases: [ admin, spec, target ]
