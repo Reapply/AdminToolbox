@@ -76,7 +76,7 @@ public class FreezeCommand implements CommandExecutor, TabCompleter {
 			String partialName = args[0].toLowerCase();
 
 			return Bukkit.getOnlinePlayers().stream()
-				.filter((player) -> !plugin.getFreezeManager().isFrozen(player))
+				.filter((player) -> !plugin.getFreezeManager().isFrozen(player) && !player.getName().equals(sender.getName()))
 				.map(OfflinePlayer::getName)
 				.filter((name) -> name.toLowerCase().startsWith(partialName))
 				.toList();
