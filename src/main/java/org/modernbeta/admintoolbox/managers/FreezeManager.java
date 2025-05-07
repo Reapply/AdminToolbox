@@ -1,6 +1,7 @@
 package org.modernbeta.admintoolbox.managers;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,6 +36,10 @@ public class FreezeManager implements Listener {
 
 	public boolean isFrozen(OfflinePlayer player) {
 		return frozenPlayers.contains(player.getUniqueId());
+	}
+
+	public List<OfflinePlayer> getFrozenPlayers() {
+		return frozenPlayers.stream().map(Bukkit::getOfflinePlayer).toList();
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
