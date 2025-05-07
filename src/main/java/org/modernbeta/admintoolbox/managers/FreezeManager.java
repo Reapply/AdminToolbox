@@ -15,10 +15,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class FreezeManager implements Listener {
 	AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
@@ -26,7 +23,6 @@ public class FreezeManager implements Listener {
 	Set<UUID> frozenPlayers = new HashSet<>();
 
 	public void freeze(Player player) {
-		// TODO: maybe show a freeze effect on screen?
 		frozenPlayers.add(player.getUniqueId());
 	}
 
@@ -39,6 +35,7 @@ public class FreezeManager implements Listener {
 	}
 
 	public List<OfflinePlayer> getFrozenPlayers() {
+		// fetch all offline players by their UUID key
 		return frozenPlayers.stream().map(Bukkit::getOfflinePlayer).toList();
 	}
 
