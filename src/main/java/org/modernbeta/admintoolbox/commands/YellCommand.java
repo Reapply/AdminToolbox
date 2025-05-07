@@ -4,22 +4,24 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-public class YellCommand implements CommandExecutor {
+public class YellCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	private static final String YELL_COMMAND_PERMISSION = "admintoolbox.yell";
@@ -101,5 +103,19 @@ public class YellCommand implements CommandExecutor {
 		target.showTitle(targetTitle);
 
 		return true;
+	}
+
+	@Override
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		if (args.length == 1) {
+			String partialName = args[0].toLowerCase();
+
+			return Bukkit.getOnlinePlayers().stream()
+				.map(OfflinePlayer::getName)
+				.filter((name) -> name.toLowerCase().startsWith(partialName))
+				.toList();
+		}
+
+		return List.of();
 	}
 }
