@@ -1,9 +1,14 @@
 package org.modernbeta.admintoolbox;
 
+import de.myzelyam.api.vanish.VanishAPI;
+import de.myzelyam.supervanish.SuperVanish;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.commands.*;
-import org.modernbeta.admintoolbox.managers.admin.AdminManager;
 import org.modernbeta.admintoolbox.managers.FreezeManager;
+import org.modernbeta.admintoolbox.managers.admin.AdminManager;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
 public class AdminToolboxPlugin extends JavaPlugin {
@@ -13,6 +18,9 @@ public class AdminToolboxPlugin extends JavaPlugin {
     FreezeManager freezeManager;
 
 	PermissionAudience broadcastAudience;
+
+	@Nullable
+	SuperVanish superVanish;
 
 	private static final String BROADCAST_AUDIENCE_PERMISSION = "admintoolbox.broadcast.receive";
 	public static final String BROADCAST_EXEMPT_PERMISSION = "admintoolbox.broadcast.exempt";
@@ -62,5 +70,9 @@ public class AdminToolboxPlugin extends JavaPlugin {
 
 	public PermissionAudience getAdminAudience() {
 		return broadcastAudience;
+	}
+
+	public Optional<SuperVanish> getVanish() {
+		return Optional.ofNullable(VanishAPI.getPlugin());
 	}
 }
