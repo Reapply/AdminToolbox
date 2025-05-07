@@ -10,17 +10,21 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
-public class TargetCommand implements CommandExecutor {
+public class TargetCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	private static final String TARGET_COMMAND_PERMISSION = "admintoolbox.target";
@@ -246,5 +250,58 @@ public class TargetCommand implements CommandExecutor {
 			location.getBlockZ(),
 			getShortWorldName(location.getWorld())
 		);
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		List<String> emptyList = new ArrayList<>();
+
+		switch (args.length) {
+			case 1 -> {
+				String partialName = args[0].toLowerCase();
+
+				return Bukkit.getOnlinePlayers().stream()
+					.map(OfflinePlayer::getName)
+					.filter((name) -> name.toLowerCase().startsWith(partialName))
+					.toList();
+			}
+			case 3 -> {
+				if (isInteger(args[0]) && isInteger(args[1])) {
+					return completeWorldName(args[2]).toList();
+				}
+				return emptyList;
+			}
+			case 4 -> {
+				if (isInteger(args[0]) && isInteger(args[1]) && isInteger(args[2])) {
+					return completeWorldName(args[3]).toList();
+				}
+				return emptyList;
+			}
+			default -> {
+				return emptyList;
+			}
+		}
+	}
+
+	private Stream<String> completeWorldName(String partialName) {
+		String partialNameLower = partialName.toLowerCase();
+
+		Stream<String> fullWorldNames = Bukkit.getWorlds().stream()
+			.map(World::getName);
+
+		Stream<String> shortWorldNames = Bukkit.getWorlds().stream()
+			.map(this::getShortWorldName);
+
+		return Stream.concat(fullWorldNames, shortWorldNames)
+			.filter((name) -> name.toLowerCase().startsWith(partialNameLower));
+	}
+
+	private boolean isInteger(String str) {
+		try {
+			Integer.parseInt(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 }

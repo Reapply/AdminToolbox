@@ -7,12 +7,17 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
+import org.modernbeta.admintoolbox.managers.FreezeManager;
 
-public class UnfreezeCommand implements CommandExecutor {
+import java.util.List;
+
+public class UnfreezeCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	private static final String UNFREEZE_COMMAND_PERMISSION = "admintoolbox.unfreeze";
@@ -48,5 +53,20 @@ public class UnfreezeCommand implements CommandExecutor {
 			Placeholder.unparsed("target", target.getName()));
 
 		return true;
+	}
+
+	@Override
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		if (args.length == 1) {
+			String partialName = args[0].toLowerCase();
+
+			return Bukkit.getOnlinePlayers().stream()
+				.filter((player) -> plugin.getFreezeManager().isFrozen(player))
+				.map(OfflinePlayer::getName)
+				.filter((name) -> name.toLowerCase().startsWith(partialName))
+				.toList();
+		}
+
+		return List.of();
 	}
 }
