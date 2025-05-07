@@ -262,7 +262,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 
 				return Bukkit.getOnlinePlayers().stream()
 					.map(OfflinePlayer::getName)
-					.filter((name) -> name.toLowerCase().startsWith(partialName))
+					.filter((name) -> name.toLowerCase().startsWith(partialName) && !name.equals(sender.getName()))
 					.toList();
 			}
 			case 3 -> {
