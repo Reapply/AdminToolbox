@@ -267,13 +267,13 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 			}
 			case 3 -> {
 				if (isInteger(args[0]) && isInteger(args[1])) {
-					return completeWorldName(args[2]).toList();
+					return getWorldNameCompletions(args[2]).toList();
 				}
 				return emptyList;
 			}
 			case 4 -> {
 				if (isInteger(args[0]) && isInteger(args[1]) && isInteger(args[2])) {
-					return completeWorldName(args[3]).toList();
+					return getWorldNameCompletions(args[3]).toList();
 				}
 				return emptyList;
 			}
@@ -283,7 +283,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 		}
 	}
 
-	private Stream<String> completeWorldName(String partialName) {
+	private Stream<String> getWorldNameCompletions(String partialName) {
 		String partialNameLower = partialName.toLowerCase();
 
 		Stream<String> fullWorldNames = Bukkit.getWorlds().stream()
