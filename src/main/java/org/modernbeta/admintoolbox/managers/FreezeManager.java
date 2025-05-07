@@ -11,7 +11,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
@@ -74,7 +73,7 @@ public class FreezeManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFrozenPlayerPlaceBlock(BlockPlaceEvent blockEvent) {
 		Player player = blockEvent.getPlayer();
-		if(!isFrozen(player)) return;
+		if (!isFrozen(player)) return;
 
 		sendFrozenAlert(player);
 		blockEvent.setCancelled(true);
@@ -83,19 +82,10 @@ public class FreezeManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFrozenPlayerBreakBlock(BlockBreakEvent blockEvent) {
 		Player player = blockEvent.getPlayer();
-		if(!isFrozen(player)) return;
+		if (!isFrozen(player)) return;
 
 		sendFrozenAlert(player);
 		blockEvent.setCancelled(true);
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onFrozenPlayerInteract(PlayerInteractEvent interactEvent) {
-		Player player = interactEvent.getPlayer();
-		if(!isFrozen(player)) return;
-
-		sendFrozenAlert(player);
-		interactEvent.setCancelled(true);
 	}
 
 	private void sendFrozenAlert(Player player) {
