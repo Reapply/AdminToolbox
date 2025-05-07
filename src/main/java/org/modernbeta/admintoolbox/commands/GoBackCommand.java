@@ -4,15 +4,18 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.managers.admin.AdminManager;
 import org.modernbeta.admintoolbox.managers.admin.AdminState;
 
+import java.util.List;
 import java.util.Objects;
 
-public class GoBackCommand implements CommandExecutor {
+public class GoBackCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	private static final String GO_BACK_COMMAND_PERMISSION = "admintoolbox.target";
@@ -44,5 +47,10 @@ public class GoBackCommand implements CommandExecutor {
 		}
 
 		return true;
+	}
+
+	@Override
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+		return List.of();
 	}
 }
