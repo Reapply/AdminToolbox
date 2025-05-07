@@ -56,7 +56,7 @@ public class FreezeCommand implements CommandExecutor, TabCompleter {
 			PermissionAudience adminAudience = plugin.getAdminAudience().excluding(sender);
 			adminAudience
 				.sendMessage(MiniMessage.miniMessage().deserialize(
-					"<gold><admin> froze <target>!",
+					"<gold><admin> froze <target>.",
 					Placeholder.unparsed("admin", sender.getName()),
 					Placeholder.unparsed("target", target.getName())
 				));

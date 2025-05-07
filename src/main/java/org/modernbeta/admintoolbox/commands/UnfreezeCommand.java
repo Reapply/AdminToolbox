@@ -17,6 +17,8 @@ import org.modernbeta.admintoolbox.managers.FreezeManager;
 
 import java.util.List;
 
+import static org.modernbeta.admintoolbox.AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION;
+
 public class UnfreezeCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
@@ -34,12 +36,13 @@ public class UnfreezeCommand implements CommandExecutor, TabCompleter {
 			return true;
 		}
 
-		plugin.getFreezeManager().unfreeze(target);
+		FreezeManager freezeManager = plugin.getFreezeManager();
+		freezeManager.unfreeze(target);
 
 		if(target.isOnline())
-			((Player) target).sendRichMessage("<green>You were unfrozen!");
+			((Player) target).sendRichMessage("<green>You have been unfrozen!");
 
-		if (!sender.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
+		if (!sender.hasPermission(BROADCAST_EXEMPT_PERMISSION)) {
 			PermissionAudience adminAudience = plugin.getAdminAudience().excluding(sender);
 			adminAudience
 				.sendMessage(MiniMessage.miniMessage().deserialize(
