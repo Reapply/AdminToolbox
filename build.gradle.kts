@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-	compileOnly("com.github.LeonMangler:SuperVanish:6.2.18-3")
+	implementation("com.github.LeonMangler:SuperVanish:6.2.18-3")
 	implementation("de.bluecolored:bluemap-api:2.7.4")
 }
 
@@ -33,13 +33,22 @@ java {
 	toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
+val plugins = runPaper.downloadPluginsSpec {
+	modrinth("viaversion", "5.3.2") // makes testing much easier
+	modrinth("bluemap", "5.5-paper")
+}
+
+tasks.runServer {
+	minecraftVersion("1.20.4")
+	downloadPlugins {
+		from(plugins)
+		github("LeonMangler", "SuperVanish", "6.2.18", "SuperVanish-6.2.18.jar")
+	}
+}
+
 runPaper.folia.registerTask {
 	minecraftVersion("1.20.4")
-
-	downloadPlugins {
-		modrinth("viaversion", "5.3.2") // makes testing much easier
-		modrinth("bluemap", "5.5-paper")
-	}
+	downloadPlugins.from(plugins)
 }
 
 tasks.build {
