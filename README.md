@@ -1,8 +1,8 @@
 # AdminToolbox
 
-Effective Minecraft moderation tools focused on minimizing access to cheat features, ensuring staff integrity and community trust.
+Effective Minecraft moderation tools designed to prevent cheating, maintaining staff integrity and community trust.
 
-**This plugin is designed to support Folia!**
+**AdminToolbox natively supports [Folia][folia].**
 
 ## Commands
 
@@ -40,8 +40,11 @@ While in admin mode, running this command places the admin into survival mode at
 `/yell <player> <message>`
 
 Forcibly displays a large red title on the targeted player's screen.
-Use the pipe character (`|`) to separate title and subtitle: `title | subtitle`
+Use the pipe character (`|`) to separate title and subtitle: `title | subtitle`.
 
+Legacy ampersand [color codes] are supported. (i.e. `Don't steal! | Please reread the &e/rules&r.`)
+
+![A large red title displays within Minecraft: "No stealing!" A smaller subtitle below it reads "Did you read the /rules?", and "/rules" is highlighted in yellow.](./.assets/demo-yell.jpg)
 ### Freeze
 
 `/freeze <player>`
@@ -59,17 +62,22 @@ To unfreeze a player, use `/unfreeze <player>`
 
 ## Permissions
 
-| Permission                       | Command             | Description                                 |
-| -------------------------------- | ------------------- | ------------------------------------------- |
-| `admintoolbox.target`            | `/admin`, `/target` | Allows entering admin mode                  |
-| `admintoolbox.reveal`            | `/reveal`           | Allows becoming visible while in admin mode |
-| `admintoolbox.yell`              | `/yell`             | Allows sending forceful messages to players |
-| `admintoolbox.freeze`            | `/freeze`           | Allows freezing and unfreezing players      |
-| `admintoolbox.broadcast.receive` |                     | Receive alerts about other admins' actions  |
-| `admintoolbox.broadcast.exempt`  |                     | Actions will not alert other admins         |
-| `admintoolbox.admin`             |                     | Access to all AdminToolbox features         |
+| Permission                       | Command                       | Description                                 |
+|----------------------------------|-------------------------------|---------------------------------------------|
+| `admintoolbox.target`            | `/admin`, `/target`           | Allows entering admin mode                  |
+| `admintoolbox.target.player`     | `/target <player>`            | Enter admin mode at a player's location     |
+| `admintoolbox.target.location`   | `/target <x> [y] <z> [world]` | Enter admin mode at given coordinates       |
+| `admintoolbox.reveal`            | `/reveal`                     | Allows becoming visible while in admin mode |
+| `admintoolbox.yell`              | `/yell`                       | Allows sending forceful messages to players |
+| `admintoolbox.freeze`            | `/freeze`                     | Allows freezing and unfreezing players      |
+| `admintoolbox.broadcast.receive` |                               | Receive alerts about other admins' actions  |
+| `admintoolbox.broadcast.exempt`  |                               | Actions will not alert other admins         |
+| `admintoolbox.admin`             |                               | Access to all AdminToolbox features         |
 
 ## Integrations
 
 - **[BlueMap](https://bluemap.bluecolored.de):**
   On servers with BlueMap, the plugin will hide admins who are [revealed](#reveal) from the map.
+
+[folia]: https://papermc.io/software/folia
+[color codes]: https://minecraft.wiki/w/Formatting_codes
