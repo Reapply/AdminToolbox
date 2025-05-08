@@ -1,8 +1,11 @@
 package org.modernbeta.admintoolbox.managers.admin;
 
 import de.bluecolored.bluemap.api.BlueMapAPI;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,12 +14,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.managers.admin.AdminState.TeleportHistory;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -142,6 +147,16 @@ public class AdminManager implements Listener {
 		return Optional.ofNullable(adminStates.get(player.getUniqueId()));
 	}
 
+	private @Nullable AdminState loadStateFromFile(UUID playerId) {
+		FileConfiguration state = plugin.getAdminStateConfig();
+		if (!state.isConfigurationSection(playerId.toString())) return null;
+
+		ConfigurationSection playerSection = state.getConfigurationSection(playerId.toString());
+		assert playerSection != null;
+
+		return AdminState.fromConfig(playerId, playerSection);
+	}
+
 	private CompletableFuture<Location> getNextLowestSafeLocation(Location location) {
 		CompletableFuture<Location> safeLocationFuture = new CompletableFuture<>();
 		final int LOWEST_BLOCK_Y = 0;
@@ -200,11 +215,38 @@ public class AdminManager implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	void onAdminQuit(PlayerQuitEvent quitEvent) {
-		// TODO: teleport back to original location when they log back in. there is a known bug
-		// TODO:	where admins will be back in survival with original inventory when if they log
-		// TODO:	out while in spectator mode! this is a potential cheat!
-		if (!plugin.getAdminManager().isActiveAdmin(quitEvent.getPlayer())) return;
-		restore(quitEvent.getPlayer());
+		if (!isActiveAdmin(quitEvent.getPlayer())) return;
+		AdminState state = getAdminState(quitEvent.getPlayer())
+			// if they are an active admin, we should always have state -- throw if we don't, that's a bug!
+			.orElseThrow();
+
+		state.saveToFile();
 	}
 
+	@EventHandler(priority = EventPriority.HIGHEST)
+	void onAdminJoin(PlayerJoinEvent joinEvent) {
+		Player player = joinEvent.getPlayer();
+		Optional.ofNullable(loadStateFromFile(player.getUniqueId()))
+			.ifPresent((state) -> {
+				adminStates.put(player.getUniqueId(), state);
+
+				switch (state.getStatus()) {
+					case SPECTATING -> player.setGameMode(GameMode.SPECTATOR);
+					case REVEALED -> player.setGameMode(GameMode.SURVIVAL);
+				}
+
+				BlueMapAPI.getInstance().ifPresent((blueMap) -> {
+					blueMap.getWebApp().setPlayerVisibility(player.getUniqueId(), false);
+				});
+
+				player.sendRichMessage(
+					"<green>Your <revealed>admin session has been restored.",
+					Placeholder.unparsed("revealed", state.getStatus() == REVEALED ? "revealed " : "")
+				);
+
+				FileConfiguration adminState = plugin.getAdminStateConfig();
+				adminState.set(player.getUniqueId().toString(), null);
+				plugin.saveAdminStateConfig();
+			});
+	}
 }

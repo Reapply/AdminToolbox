@@ -2,12 +2,16 @@ package org.modernbeta.admintoolbox;
 
 import de.myzelyam.api.vanish.VanishAPI;
 import de.myzelyam.supervanish.SuperVanish;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.managers.FreezeManager;
 import org.modernbeta.admintoolbox.managers.admin.AdminManager;
 
 import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -22,6 +26,11 @@ public class AdminToolboxPlugin extends JavaPlugin {
 	@Nullable
 	SuperVanish superVanish;
 
+	private File adminStateConfigFile;
+	private FileConfiguration adminStateConfig;
+
+	private static final String ADMIN_STATE_CONFIG_FILENAME = "admin-state.yml";
+
 	private static final String BROADCAST_AUDIENCE_PERMISSION = "admintoolbox.broadcast.receive";
 	public static final String BROADCAST_EXEMPT_PERMISSION = "admintoolbox.broadcast.exempt";
 
@@ -33,6 +42,9 @@ public class AdminToolboxPlugin extends JavaPlugin {
         this.freezeManager = new FreezeManager();
 
 		this.broadcastAudience = new PermissionAudience(BROADCAST_AUDIENCE_PERMISSION);
+
+		createAdminStateConfig();
+		this.adminStateConfig = getAdminStateConfig();
 
         getServer().getPluginManager().registerEvents(adminManager, this);
         getServer().getPluginManager().registerEvents(freezeManager, this);
@@ -56,6 +68,29 @@ public class AdminToolboxPlugin extends JavaPlugin {
         getLogger().info(String.format("Disabled %s", getPluginMeta().getDisplayName()));
     }
 
+	private void createAdminStateConfig() {
+		this.adminStateConfigFile = new File(getDataFolder(), ADMIN_STATE_CONFIG_FILENAME);
+		if(!this.adminStateConfigFile.exists()) {
+			this.adminStateConfigFile.getParentFile().mkdirs();
+			saveResource(ADMIN_STATE_CONFIG_FILENAME, false);
+		}
+
+		this.adminStateConfig = YamlConfiguration.loadConfiguration(adminStateConfigFile);
+	}
+
+	public FileConfiguration getAdminStateConfig() {
+		return this.adminStateConfig;
+	}
+
+	public void saveAdminStateConfig() {
+		try {
+			this.adminStateConfig.save(adminStateConfigFile);
+		} catch (IOException e) {
+			// Throw this, this should never happen with the safeguards we use in onEnable
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static AdminToolboxPlugin getInstance() {
 		return instance;
 	}
@@ -71,6 +106,8 @@ public class AdminToolboxPlugin extends JavaPlugin {
 	public PermissionAudience getAdminAudience() {
 		return broadcastAudience;
 	}
+
+
 
 	public Optional<SuperVanish> getVanish() {
 		return Optional.ofNullable(VanishAPI.getPlugin());

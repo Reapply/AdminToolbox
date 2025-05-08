@@ -1,9 +1,14 @@
 package org.modernbeta.admintoolbox.managers.admin;
 
 import de.bluecolored.bluemap.api.BlueMapAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -13,6 +18,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class AdminState {
+	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
+
 	final UUID playerId;
 
 	Status status = Status.SPECTATING;
@@ -49,12 +56,49 @@ public class AdminState {
 		);
 	}
 
+	static AdminState fromConfig(UUID playerId, ConfigurationSection playerSection) {
+		ItemStack[] items = new ItemStack[0];
+		if (playerSection.isList("inventory")) {
+			@SuppressWarnings("unchecked")
+			List<ItemStack> itemList = (List<ItemStack>) playerSection.getList("inventory");
+			if (itemList != null) {
+				items = itemList.toArray(new ItemStack[0]);
+			}
+		}
+
+		Status status = Status.valueOf(playerSection.getString("status", Status.SPECTATING.name()));
+
+		Boolean mapVisibility = playerSection.contains("map_visibility") ?
+			playerSection.getBoolean("map_visibility") : null;
+
+		TeleportHistory<Location> history = new TeleportHistory<>(null);
+		if (playerSection.isConfigurationSection("original_location")) {
+			ConfigurationSection locSection = playerSection.getConfigurationSection("original_location");
+			if (locSection != null) {
+				World world = Bukkit.getWorld(locSection.getString("world"));
+				if (world != null) {
+					double x = locSection.getDouble("x");
+					double y = locSection.getDouble("y");
+					double z = locSection.getDouble("z");
+					float yaw = (float) locSection.getDouble("yaw");
+					float pitch = (float) locSection.getDouble("pitch");
+					history = new TeleportHistory<>(new Location(world, x, y, z, yaw, pitch));
+				}
+			}
+		}
+
+		AdminState state = new AdminState(playerId, history, items, CompletableFuture.completedFuture(mapVisibility));
+		state.setStatus(status);
+		return state;
+	}
+
 	public Status getStatus() {
 		return this.status;
 	}
 
-	protected Status setStatus(Status newStatus) {
-		return this.status = newStatus;
+	protected void setStatus(Status newStatus) {
+		this.status = newStatus;
+		saveToFile();
 	}
 
 	ItemStack[] getSavedInventory() {
@@ -67,6 +111,30 @@ public class AdminState {
 
 	Optional<Boolean> getSavedMapVisibility() {
 		return Optional.ofNullable(this.savedMapVisibility);
+	}
+
+	void saveToFile() {
+		FileConfiguration adminState = plugin.getAdminStateConfig();
+		ConfigurationSection playerSection = adminState.createSection(playerId.toString());
+
+		playerSection.set("inventory", savedInventory);
+		playerSection.set("status", status.name());
+		if (savedMapVisibility != null) {
+			playerSection.set("map_visibility", savedMapVisibility);
+		}
+
+		Location originalLocation = teleportHistory.getOriginalLocation();
+		if (originalLocation != null) {
+			ConfigurationSection locationSection = playerSection.createSection("original_location");
+			locationSection.set("world", originalLocation.getWorld().getName());
+			locationSection.set("x", originalLocation.getX());
+			locationSection.set("y", originalLocation.getY());
+			locationSection.set("z", originalLocation.getZ());
+			locationSection.set("yaw", originalLocation.getYaw());
+			locationSection.set("pitch", originalLocation.getPitch());
+		}
+
+		plugin.saveAdminStateConfig();
 	}
 
 	public enum Status {
