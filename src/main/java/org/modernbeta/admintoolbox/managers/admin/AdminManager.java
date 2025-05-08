@@ -207,13 +207,6 @@ public class AdminManager implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	void onAdminDeath(PlayerDeathEvent deathEvent) {
-		Player player = deathEvent.getPlayer();
-		if (!isActiveAdmin(player)) return;
-		deathEvent.setCancelled(true);
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
 	void onAdminQuit(PlayerQuitEvent quitEvent) {
 		if (!isActiveAdmin(quitEvent.getPlayer())) return;
 		AdminState state = getAdminState(quitEvent.getPlayer())
