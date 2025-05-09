@@ -5,37 +5,28 @@ plugins {
 }
 
 group = "org.modernbeta.admintoolbox"
-version = "0.1"
-
-repositories {
-	mavenCentral()
-	maven("https://repo.papermc.io/repository/maven-public/") {
-		name = "papermc"
-	}
-	maven("https://oss.sonatype.org/content/groups/public/") {
-		name = "sonatype"
-	}
-    maven("https://repo.bluecolored.de/releases") {
-        name = "bluemap"
-    }
-}
-
-dependencies {
-	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("de.bluecolored:bluemap-api:2.7.4")
-}
+version = "1.0"
 
 java {
 	toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
-runPaper.folia.registerTask {
-	minecraftVersion("1.20.4")
-
-	downloadPlugins {
-		modrinth("viaversion", "5.3.2") // makes testing much easier
-		modrinth("bluemap", "5.5-paper")
+repositories {
+	maven("https://repo.papermc.io/repository/maven-public/") {
+		name = "papermc"
 	}
+    maven("https://repo.bluecolored.de/releases") {
+        name = "bluemap"
+    }
+	maven("https://jitpack.io") {
+		name = "jitpack"
+	}
+}
+
+dependencies {
+	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+	implementation("com.github.LeonMangler:SuperVanish:6.2.18-3")
+	implementation("de.bluecolored:bluemap-api:2.7.4")
 }
 
 tasks.build {
@@ -49,4 +40,35 @@ tasks.processResources {
 	filesMatching("plugin.yml") {
 		expand(props)
 	}
+}
+
+val plugins = runPaper.downloadPluginsSpec {
+	modrinth("viaversion", "5.3.2") // makes testing much easier
+	modrinth("bluemap", "5.5-paper")
+}
+
+// Paper (non-Folia!) server
+tasks.runServer {
+	minecraftVersion("1.20.4")
+	downloadPlugins {
+		from(plugins)
+		// SuperVanish does not support Folia, so it only goes in the plain Paper server
+		github("LeonMangler", "SuperVanish", "6.2.18", "SuperVanish-6.2.18.jar")
+	}
+}
+
+// Folia server
+runPaper.folia.registerTask {
+	minecraftVersion("1.20.4")
+	downloadPlugins.from(plugins)
+}
+
+// better IntelliJ IDEA debugging
+// see: https://github.com/jpenilla/run-task/wiki/Debugging
+tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
+	javaLauncher = javaToolchains.launcherFor {
+		vendor = JvmVendorSpec.JETBRAINS
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+	jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }

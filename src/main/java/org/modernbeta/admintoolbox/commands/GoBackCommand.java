@@ -1,5 +1,6 @@
 package org.modernbeta.admintoolbox.commands;
 
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,31 +10,41 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.managers.admin.AdminManager;
+import org.modernbeta.admintoolbox.managers.admin.AdminState;
 
 import java.util.List;
+import java.util.Objects;
 
-public class RevealCommand implements CommandExecutor, TabCompleter {
+public class GoBackCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
-	private static final String REVEAL_COMMAND_PERMISSION = "admintoolbox.reveal";
+	private static final String GO_BACK_COMMAND_PERMISSION = "admintoolbox.target";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-		if (!sender.hasPermission(REVEAL_COMMAND_PERMISSION))
-			return false; // Bukkit should handle this for us, just a sanity-check
+		if (!sender.hasPermission(GO_BACK_COMMAND_PERMISSION)) return false;
+		if (args.length > 0) return false;
+
 		if (!(sender instanceof Player player)) {
-			sender.sendRichMessage("<red>Error: You must be a player to use this command.");
-			return false;
+			sender.sendRichMessage("<red>Error: You must be a player to run this command!");
+			return true;
 		}
 
 		AdminManager adminManager = plugin.getAdminManager();
 
-		if(!adminManager.isSpectating(player)) {
-			player.sendRichMessage("<red>Error: You cannot reveal if you are not spectating!");
+		if (!adminManager.isActiveAdmin(player)) {
+			sender.sendRichMessage("<red>Error: You are not in an active admin state!");
 			return true;
 		}
 
-		adminManager.reveal(player);
+		AdminState adminState = adminManager.getAdminState(player).orElseThrow();
+		Location previousLocation = adminState.getTeleportHistory().goBack();
+
+		if (previousLocation == null) {
+			adminManager.restore(player);
+		} else {
+			adminManager.target(player, previousLocation, false);
+		}
 
 		return true;
 	}
