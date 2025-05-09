@@ -22,7 +22,7 @@ import static org.modernbeta.admintoolbox.AdminToolboxPlugin.BROADCAST_EXEMPT_PE
 public class UnfreezeCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
-	private static final String UNFREEZE_COMMAND_PERMISSION = "admintoolbox.unfreeze";
+	private static final String UNFREEZE_COMMAND_PERMISSION = "admintoolbox.freeze";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
