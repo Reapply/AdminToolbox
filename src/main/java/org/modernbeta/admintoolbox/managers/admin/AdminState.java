@@ -57,12 +57,12 @@ public class AdminState {
 	}
 
 	static AdminState fromConfig(UUID playerId, ConfigurationSection playerSection) {
-		ItemStack[] items = new ItemStack[0];
+		ItemStack[] items = new ItemStack[41];
 		if (playerSection.isList("inventory")) {
 			@SuppressWarnings("unchecked")
 			List<ItemStack> itemList = (List<ItemStack>) playerSection.getList("inventory");
 			if (itemList != null) {
-				items = itemList.toArray(new ItemStack[0]);
+				items = itemList.toArray(new ItemStack[41]);
 			}
 		}
 
