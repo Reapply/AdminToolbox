@@ -232,8 +232,6 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-		List<String> emptyList = new ArrayList<>();
-
 		switch (args.length) {
 			case 1 -> {
 				if(!sender.hasPermission(TARGET_PLAYER_PERMISSION)) return List.of();
@@ -251,7 +249,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 				if (isInteger(args[0]) && isInteger(args[1])) {
 					return getWorldNameCompletions(args[2]).toList();
 				}
-				return emptyList;
+				return List.of();
 			}
 			case 4 -> {
 				if(!sender.hasPermission(TARGET_COORDINATES_PERMISSION)) return List.of();
@@ -259,10 +257,10 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 				if (isInteger(args[0]) && isInteger(args[1]) && isInteger(args[2])) {
 					return getWorldNameCompletions(args[3]).toList();
 				}
-				return emptyList;
+				return List.of();
 			}
 			default -> {
-				return emptyList;
+				return List.of();
 			}
 		}
 	}
