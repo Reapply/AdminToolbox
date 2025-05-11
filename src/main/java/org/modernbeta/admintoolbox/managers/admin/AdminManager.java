@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static org.modernbeta.admintoolbox.commands.TargetCommand.TARGET_PLAYER_PERMISSION;
 import static org.modernbeta.admintoolbox.managers.admin.AdminState.Status.REVEALED;
 import static org.modernbeta.admintoolbox.managers.admin.AdminState.Status.SPECTATING;
 
@@ -241,5 +242,22 @@ public class AdminManager implements Listener {
 				adminState.set(player.getUniqueId().toString(), null);
 				plugin.saveAdminStateConfig();
 			});
+	}
+
+	/**
+	 * Prevent players in admin mode from using the spectator teleport menu unless they have
+	 * permission to teleport to players directly.
+	 */
+	@EventHandler
+	void onAdminTeleport(PlayerTeleportEvent teleportEvent) {
+		Player player = teleportEvent.getPlayer();
+		if (!isActiveAdmin(player)) return;
+		if (teleportEvent.getCause() != PlayerTeleportEvent.TeleportCause.SPECTATE) return;
+		if (player.hasPermission(TARGET_PLAYER_PERMISSION))
+			// allow if admin can spectate players directly, allow it
+			return;
+
+		player.sendRichMessage("<red>You don't have permission to spectate players");
+		teleportEvent.setCancelled(true);
 	}
 }
