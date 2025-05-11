@@ -16,7 +16,6 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
 import org.modernbeta.admintoolbox.utils.LocationUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -28,8 +27,8 @@ import static org.modernbeta.admintoolbox.utils.LocationUtils.*;
 public class TargetCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
-	private static final String TARGET_PLAYER_PERMISSION = "admintoolbox.target.player";
-	private static final String TARGET_COORDINATES_PERMISSION = "admintoolbox.target.location";
+	public static final String TARGET_PLAYER_PERMISSION = "admintoolbox.target.player";
+	public static final String TARGET_COORDINATES_PERMISSION = "admintoolbox.target.location";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
