@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,8 +16,6 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
 import org.modernbeta.admintoolbox.utils.LocationUtils;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -30,12 +27,11 @@ import static org.modernbeta.admintoolbox.utils.LocationUtils.*;
 public class TargetCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
-	private static final String TARGET_COMMAND_PERMISSION = "admintoolbox.target";
+	public static final String TARGET_PLAYER_PERMISSION = "admintoolbox.target.player";
+	public static final String TARGET_COORDINATES_PERMISSION = "admintoolbox.target.location";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-		if (!sender.hasPermission(TARGET_COMMAND_PERMISSION))
-			return false; // Bukkit should handle this for us, just a sanity-check
 		if (!(sender instanceof Player player)) {
 			sender.sendRichMessage("<red>Error: You must be a player to use this command.");
 			return false;
@@ -48,11 +44,25 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 			case 0 -> {
 				if (plugin.getAdminManager().isSpectating(player)) {
 					plugin.getAdminManager().restore(player);
-				} else {
-					plugin.getAdminManager().target(player, player.getLocation());
+					break;
 				}
+
+				if (!(
+					player.hasPermission(TARGET_PLAYER_PERMISSION)
+						|| player.hasPermission(TARGET_COORDINATES_PERMISSION)
+				)) {
+					sendNoPermissionMessage(sender);
+					return true;
+				}
+
+				plugin.getAdminManager().target(player, player.getLocation());
 			}
 			case 1 -> {
+				if (!(player.hasPermission(TARGET_PLAYER_PERMISSION))) {
+					sendNoPermissionMessage(sender);
+					return true;
+				}
+
 				String targetPlayerName = args[0];
 
 				Bukkit.getAsyncScheduler().runNow(plugin, (task) -> {
@@ -73,6 +83,11 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 				});
 			}
 			case 2 -> {
+				if (!(player.hasPermission(TARGET_COORDINATES_PERMISSION))) {
+					sendNoPermissionMessage(sender);
+					return true;
+				}
+
 				try {
 					int x = Integer.parseInt(args[0]);
 					int z = Integer.parseInt(args[1]);
@@ -93,6 +108,11 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 				}
 			}
 			case 3 -> {
+				if (!(player.hasPermission(TARGET_COORDINATES_PERMISSION))) {
+					sendNoPermissionMessage(sender);
+					return true;
+				}
+
 				try {
 					int x = Integer.parseInt(args[0]);
 					int y = Integer.parseInt(args[1]);
@@ -137,6 +157,11 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 				}
 			}
 			case 4 -> {
+				if (!(player.hasPermission(TARGET_COORDINATES_PERMISSION))) {
+					sendNoPermissionMessage(sender);
+					return true;
+				}
+
 				try {
 					int x = Integer.parseInt(args[0]);
 					int y = Integer.parseInt(args[1]);
@@ -206,10 +231,10 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-		List<String> emptyList = new ArrayList<>();
-
 		switch (args.length) {
 			case 1 -> {
+				if(!sender.hasPermission(TARGET_PLAYER_PERMISSION)) return List.of();
+
 				String partialName = args[0].toLowerCase();
 
 				return Bukkit.getOnlinePlayers().stream()
@@ -218,19 +243,23 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 					.toList();
 			}
 			case 3 -> {
+				if(!sender.hasPermission(TARGET_COORDINATES_PERMISSION)) return List.of();
+
 				if (isInteger(args[0]) && isInteger(args[1])) {
 					return getWorldNameCompletions(args[2]).toList();
 				}
-				return emptyList;
+				return List.of();
 			}
 			case 4 -> {
+				if(!sender.hasPermission(TARGET_COORDINATES_PERMISSION)) return List.of();
+
 				if (isInteger(args[0]) && isInteger(args[1]) && isInteger(args[2])) {
 					return getWorldNameCompletions(args[3]).toList();
 				}
-				return emptyList;
+				return List.of();
 			}
 			default -> {
-				return emptyList;
+				return List.of();
 			}
 		}
 	}
@@ -255,5 +284,9 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 		} catch (NumberFormatException e) {
 			return false;
 		}
+	}
+
+	private void sendNoPermissionMessage(CommandSender sender) {
+		sender.sendRichMessage("<red>You do not have permission!");
 	}
 }
