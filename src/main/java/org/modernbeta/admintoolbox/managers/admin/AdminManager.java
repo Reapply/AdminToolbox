@@ -198,7 +198,6 @@ public class AdminManager implements Listener {
 		if (!(damageEvent.getEntity() instanceof Player player)) return;
 		if (!isActiveAdmin(player)) return;
 		// allow PVP damage to actually affect health
-		// TODO: make this togglable, it's hardcoded for now for our use on Modern Beta
 		if (damageEvent.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
 			&& damageEvent.getDamageSource().getCausingEntity() instanceof Player) return;
 		damageEvent.setDamage(0.0);
