@@ -121,8 +121,6 @@ public class AdminManager implements Listener {
 				});
 			});
 		}, () -> {
-			// TODO: gracefully handle this situation. this will execute on logout when
-			// TODO:	the player's original location is unloaded.
 			throw new RuntimeException("Tried to restore a retired player! This is a bug.");
 		});
 	}
