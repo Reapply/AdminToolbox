@@ -31,8 +31,6 @@ public class LocationUtils {
 
 		World defaultWorld = Bukkit.getWorlds().getFirst();
 		// backwards-compatibility: resolve "overworld" to default world
-		// TODO: could replace with a more robust first-world-with-type method
-		// TODO: 	but on a large majority of servers this will suffice.
 		if (worldName.equalsIgnoreCase("overworld")) return defaultWorld;
 
 		// look up world by short name (like 'nether' for `world_nether`)
