@@ -163,8 +163,6 @@ public class AdminState {
 		// Use a copy-on-write ArrayList here for thread safety. This does come with some
 		// performance impact but it should feel negligible considering how infrequently this should
 		// be accessed, and even less noticeable on a multithreaded server. (Folia) -lynx
-		//
-		// TODO: see if we can optimize concurrent read/write operations on this later
 		private final List<T> backLocations = new CopyOnWriteArrayList<>();
 		private final List<T> forwardLocations = new CopyOnWriteArrayList<>();
 		private T originalLocation = null;
