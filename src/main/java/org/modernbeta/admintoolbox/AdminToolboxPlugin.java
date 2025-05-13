@@ -63,7 +63,6 @@ public class AdminToolboxPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
 		adminManager.restoreAll();
-		// TODO: unfreeze all frozen players
 
         getLogger().info(String.format("Disabled %s", getPluginMeta().getDisplayName()));
     }
