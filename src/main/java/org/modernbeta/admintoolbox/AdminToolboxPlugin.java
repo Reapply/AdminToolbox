@@ -56,6 +56,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		getCommand("freeze").setExecutor(new FreezeCommand());
 		getCommand("unfreeze").setExecutor(new UnfreezeCommand());
 		getCommand("yell").setExecutor(new YellCommand());
+		getCommand("spawn").setExecutor(new SpawnCommand());
 
         getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
     }
