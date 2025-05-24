@@ -14,8 +14,11 @@ permissions:
     description: Can target specific players' locations.
   admintoolbox.target.location:
     description: Can target specific coordinates.
-  admintoolbox.target.spawn:
-    description: Can target specific world spawns.
+  admintoolbox.spawn:
+    description: Can target at world spawn.
+  admintoolbox.spawn.all:
+    description: Can target all world spawns.
+    children: [ admintoolbox.spawn ]
   admintoolbox.reveal:
     description: Can reveal from spectator mode.
   admintoolbox.freeze:
@@ -78,6 +81,6 @@ commands:
     permission: admintoolbox.yell
     aliases: [ y, adminsay ]
   spawn:
-    description: Enter spectator mode at a given world spawn.
+    description: Enter spectating mode at a given world spawn.
     usage: /<command> [world]
-    permission: admintoolbox.target.spawn
+    permission: admintoolbox.spawn
