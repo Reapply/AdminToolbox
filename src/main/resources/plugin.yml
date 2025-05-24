@@ -8,14 +8,18 @@ softdepend: [ BlueMap, SuperVanish, PremiumVanish ]
 
 permissions:
   admintoolbox.target:
-    description: Can target players and coordinate locations.
-    children: [ admintoolbox.target.player, admintoolbox.target.location ]
+    description: Can use the target command at own location.
   admintoolbox.target.player:
     description: Can target specific players' locations.
+    children: [ admintoolbox.target ]
   admintoolbox.target.location:
     description: Can target specific coordinates.
-  admintoolbox.target.spawn:
-    description: Can target specific world spawns.
+    children: [ admintoolbox.target ]
+  admintoolbox.spawn:
+    description: Can target at world spawn.
+  admintoolbox.spawn.all:
+    description: Can target all world spawns.
+    children: [ admintoolbox.spawn ]
   admintoolbox.reveal:
     description: Can reveal from spectator mode.
   admintoolbox.freeze:
@@ -30,9 +34,11 @@ permissions:
   # Legacy catch-all admin permission. Children list is designed to be
   # backwards-compatible with previous versions of AdminToolbox.
   admintoolbox.admin:
-    description: Can perform all AdminToolbox actions.
+    description: Can perform core AdminToolbox actions.
     children:
       - admintoolbox.target
+      - admintoolbox.target.player
+      - admintoolbox.target.location
       - admintoolbox.reveal
       - admintoolbox.freeze
       - admintoolbox.yell
@@ -78,6 +84,7 @@ commands:
     permission: admintoolbox.yell
     aliases: [ y, adminsay ]
   spawn:
-    description: Enter spectator mode at a given world spawn.
+    description: Enter spectating mode at a given world spawn.
     usage: /<command> [world]
-    permission: admintoolbox.target.spawn
+    aliases: [ targetspawn ]
+    permission: admintoolbox.spawn

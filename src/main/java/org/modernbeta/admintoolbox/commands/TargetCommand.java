@@ -14,19 +14,18 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
-import org.modernbeta.admintoolbox.utils.LocationUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 
 import static org.modernbeta.admintoolbox.utils.LocationUtils.*;
 
 public class TargetCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
+	public static final String TARGET_CMD_PERMISSION = "admintoolbox.target";
 	public static final String TARGET_PLAYER_PERMISSION = "admintoolbox.target.player";
 	public static final String TARGET_COORDINATES_PERMISSION = "admintoolbox.target.location";
 
@@ -41,22 +40,21 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 		CompletableFuture<Location> targetLocationFuture = new CompletableFuture<>();
 
 		switch (args.length) {
+			// /target (toggle or target self)
 			case 0 -> {
 				if (plugin.getAdminManager().isSpectating(player)) {
 					plugin.getAdminManager().restore(player);
 					break;
 				}
 
-				if (!(
-					player.hasPermission(TARGET_PLAYER_PERMISSION)
-						|| player.hasPermission(TARGET_COORDINATES_PERMISSION)
-				)) {
+				if (!player.hasPermission(TARGET_CMD_PERMISSION)) {
 					sendNoPermissionMessage(sender);
 					return true;
 				}
 
 				plugin.getAdminManager().target(player, player.getLocation());
 			}
+			// /target player
 			case 1 -> {
 				if (!(player.hasPermission(TARGET_PLAYER_PERMISSION))) {
 					sendNoPermissionMessage(sender);
@@ -82,6 +80,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 					}
 				});
 			}
+			// /target x z
 			case 2 -> {
 				if (!(player.hasPermission(TARGET_COORDINATES_PERMISSION))) {
 					sendNoPermissionMessage(sender);
@@ -107,6 +106,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 					targetLocationFuture.completeExceptionally(e);
 				}
 			}
+			// /target x y z (OR) /target x z world
 			case 3 -> {
 				if (!(player.hasPermission(TARGET_COORDINATES_PERMISSION))) {
 					sendNoPermissionMessage(sender);
@@ -156,6 +156,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 					targetLocationFuture.completeExceptionally(e);
 				}
 			}
+			// /target x y z world
 			case 4 -> {
 				if (!(player.hasPermission(TARGET_COORDINATES_PERMISSION))) {
 					sendNoPermissionMessage(sender);
@@ -232,6 +233,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		switch (args.length) {
+			// /target PLAYER
 			case 1 -> {
 				if(!sender.hasPermission(TARGET_PLAYER_PERMISSION)) return List.of();
 
@@ -242,6 +244,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 					.filter((name) -> name.toLowerCase().startsWith(partialName) && !name.equals(sender.getName()))
 					.toList();
 			}
+			// /target x z WORLD
 			case 3 -> {
 				if(!sender.hasPermission(TARGET_COORDINATES_PERMISSION)) return List.of();
 
@@ -250,6 +253,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 				}
 				return List.of();
 			}
+			// /target x y z WORLD
 			case 4 -> {
 				if(!sender.hasPermission(TARGET_COORDINATES_PERMISSION)) return List.of();
 

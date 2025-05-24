@@ -21,7 +21,8 @@ import static org.modernbeta.admintoolbox.utils.LocationUtils.getWorldNameComple
 public class SpawnCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
-	public static final String TARGET_SPAWN_PERMISSION = "admintoolbox.target.spawn";
+	public static final String TARGET_SPAWN_PERMISSION = "admintoolbox.spawn";
+	public static final String TARGET_SPAWN_ALL_PERMISSION = "admintoolbox.spawn.all";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -39,6 +40,11 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 		if (args.length == 0) {
 			targetWorld = player.getWorld();
 		} else if (args.length == 1) {
+			if (!player.hasPermission(TARGET_SPAWN_ALL_PERMISSION)) {
+				sendNoPermissionMessage(sender);
+				return true;
+			}
+
 			targetWorld = LocationUtils.resolveWorld(args[0]);
 			if (targetWorld == null) {
 				sender.sendRichMessage("<red>Error: Could not find world '" + args[0] + "'.");
@@ -74,10 +80,14 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-		if(!sender.hasPermission(TARGET_SPAWN_PERMISSION)) return List.of();
+		if (!sender.hasPermission(TARGET_SPAWN_ALL_PERMISSION)) return List.of();
 
-		String partialName = args[0].toLowerCase();
-		return getWorldNameCompletions(partialName).toList();
+		if (args.length == 1) {
+			String partialName = args[0].toLowerCase();
+			return getWorldNameCompletions(partialName).toList();
+		}
+
+		return List.of();
 	}
 
 	private void sendNoPermissionMessage(CommandSender sender) {
