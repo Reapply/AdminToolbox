@@ -14,19 +14,18 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.PermissionAudience;
-import org.modernbeta.admintoolbox.utils.LocationUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 
 import static org.modernbeta.admintoolbox.utils.LocationUtils.*;
 
 public class TargetCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
+	public static final String TARGET_CMD_PERMISSION = "admintoolbox.target";
 	public static final String TARGET_PLAYER_PERMISSION = "admintoolbox.target.player";
 	public static final String TARGET_COORDINATES_PERMISSION = "admintoolbox.target.location";
 
@@ -48,10 +47,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 					break;
 				}
 
-				if (!(
-					player.hasPermission(TARGET_PLAYER_PERMISSION)
-						|| player.hasPermission(TARGET_COORDINATES_PERMISSION)
-				)) {
+				if (!player.hasPermission(TARGET_CMD_PERMISSION)) {
 					sendNoPermissionMessage(sender);
 					return true;
 				}
