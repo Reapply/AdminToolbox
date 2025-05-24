@@ -42,25 +42,26 @@ public class AdminManager implements Listener {
 	Map<UUID, AdminState> adminStates = new HashMap<>();
 
 	public void target(Player player, Location location, boolean appending) {
-		AdminState adminState = AdminState.forPlayer(player);
 
 		Component actionBarMessage = MiniMessage.miniMessage().deserialize("<gold>Teleporting...");
 		player.sendActionBar(actionBarMessage);
+
+		// set spectator before teleporting so we don't show for a tick
+		GameMode previousGamemode = player.getGameMode();
+		player.setGameMode(GameMode.SPECTATOR);
 
 		player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept((didTeleport) -> {
 			// clear the action bar since the teleport is no longer pending
 			player.sendActionBar(Component.empty());
 
 			if (!didTeleport) {
+				player.setGameMode(previousGamemode);
 				player.sendRichMessage("<red>You weren't teleported! Paper doesn't tell us why. :-/");
 				return;
 			}
 
-			player.setGameMode(GameMode.SPECTATOR);
-			adminState.setStatus(SPECTATING);
-
 			if (!isActiveAdmin(player)) {
-				adminStates.put(player.getUniqueId(), adminState);
+				adminStates.put(player.getUniqueId(), AdminState.forPlayer(player));
 				player.getInventory().clear();
 			} else if (appending) {
 				TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
@@ -68,6 +69,9 @@ public class AdminManager implements Listener {
 					history.add(player.getLocation().clone());
 				}
 			}
+
+			// set afterwords otherwise default admin status is set, not spectating
+			adminStates.get(player.getUniqueId()).setStatus(SPECTATING);
 		});
 	}
 
