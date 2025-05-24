@@ -40,15 +40,7 @@ public class AdminManager implements Listener {
 	Map<UUID, AdminState> adminStates = new HashMap<>();
 
 	public void target(Player player, Location location, boolean appending) {
-		if (!isActiveAdmin(player)) {
-			adminStates.put(player.getUniqueId(), AdminState.forPlayer(player));
-			player.getInventory().clear();
-		} else if (appending) {
-			TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
-			if (history != null) {
-				history.add(player.getLocation().clone());
-			}
-		}
+		AdminState adminState = AdminState.forPlayer(player);
 
 		player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept((didTeleport) -> {
 			if (!didTeleport) {
@@ -57,7 +49,17 @@ public class AdminManager implements Listener {
 			}
 
 			player.setGameMode(GameMode.SPECTATOR);
-			adminStates.get(player.getUniqueId()).setStatus(SPECTATING);
+			adminState.setStatus(SPECTATING);
+
+			if (!isActiveAdmin(player)) {
+				adminStates.put(player.getUniqueId(), adminState);
+				player.getInventory().clear();
+			} else if (appending) {
+				TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
+				if (history != null) {
+					history.add(player.getLocation().clone());
+				}
+			}
 		});
 	}
 
