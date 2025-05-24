@@ -1,6 +1,8 @@
 package org.modernbeta.admintoolbox.managers.admin;
 
 import de.bluecolored.bluemap.api.BlueMapAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -40,24 +42,32 @@ public class AdminManager implements Listener {
 	Map<UUID, AdminState> adminStates = new HashMap<>();
 
 	public void target(Player player, Location location, boolean appending) {
-		if (!isActiveAdmin(player)) {
-			adminStates.put(player.getUniqueId(), AdminState.forPlayer(player));
-			player.getInventory().clear();
-		} else if (appending) {
-			TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
-			if (history != null) {
-				history.add(player.getLocation().clone());
-			}
-		}
+		AdminState adminState = AdminState.forPlayer(player);
+
+		Component actionBarMessage = MiniMessage.miniMessage().deserialize("<gold>Teleporting...");
+		player.sendActionBar(actionBarMessage);
 
 		player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept((didTeleport) -> {
+			// clear the action bar since the teleport is no longer pending
+			player.sendActionBar(Component.empty());
+
 			if (!didTeleport) {
-				player.sendRichMessage("<red>Error: You were not teleported!");
+				player.sendRichMessage("<red>You weren't teleported! Paper doesn't tell us why. :-/");
 				return;
 			}
 
 			player.setGameMode(GameMode.SPECTATOR);
-			adminStates.get(player.getUniqueId()).setStatus(SPECTATING);
+			adminState.setStatus(SPECTATING);
+
+			if (!isActiveAdmin(player)) {
+				adminStates.put(player.getUniqueId(), adminState);
+				player.getInventory().clear();
+			} else if (appending) {
+				TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
+				if (history != null) {
+					history.add(player.getLocation().clone());
+				}
+			}
 		});
 	}
 
