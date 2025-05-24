@@ -86,4 +86,5 @@ commands:
   spawn:
     description: Enter spectating mode at a given world spawn.
     usage: /<command> [world]
+    aliases: [ targetspawn ]
     permission: admintoolbox.spawn
