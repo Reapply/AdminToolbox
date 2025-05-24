@@ -55,14 +55,14 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 		targetWorld.getChunkAtAsync(spawnLocation).thenAccept(chunk -> {
 			plugin.getAdminManager().target(player, spawnLocation);
 
-			player.sendRichMessage("<gold>Spectating at <target> spawn",
+			player.sendRichMessage("<gold>Spectating at spawn in <yellow><target></yellow>",
 				Placeholder.unparsed("target", worldLabel));
 
 			if (!player.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
 				PermissionAudience adminAudience = plugin.getAdminAudience()
 					.excluding(player);
 				adminAudience.sendMessage(MiniMessage.miniMessage().deserialize(
-					"<gold><admin> is spectating at <target> spawn",
+					"<gold><admin> is spectating at spawn in <yellow><target></yellow>",
 					Placeholder.unparsed("admin", sender.getName()),
 					Placeholder.unparsed("target", worldLabel)
 				));
