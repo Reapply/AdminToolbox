@@ -52,7 +52,7 @@ public class AdminManager implements Listener {
 			player.sendActionBar(Component.empty());
 
 			if (!didTeleport) {
-				player.sendRichMessage("<red>Error: You were not teleported!");
+				player.sendRichMessage("<red>You weren't teleported! Paper doesn't tell us why. :-/");
 				return;
 			}
 
