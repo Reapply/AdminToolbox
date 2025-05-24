@@ -264,19 +264,6 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 		}
 	}
 
-	private Stream<String> getWorldNameCompletions(String partialName) {
-		String partialNameLower = partialName.toLowerCase();
-
-		Stream<String> fullWorldNames = Bukkit.getWorlds().stream()
-			.map(World::getName);
-
-		Stream<String> shortWorldNames = Bukkit.getWorlds().stream()
-			.map(LocationUtils::getShortWorldName);
-
-		return Stream.concat(fullWorldNames, shortWorldNames)
-			.filter((name) -> name.toLowerCase().startsWith(partialNameLower));
-	}
-
 	private boolean isInteger(String str) {
 		try {
 			Integer.parseInt(str);
