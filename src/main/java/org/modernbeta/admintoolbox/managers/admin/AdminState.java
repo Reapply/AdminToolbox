@@ -116,7 +116,6 @@ public class AdminState {
 
 	protected void setStatus(Status newStatus) {
 		this.status = newStatus;
-		saveToFile();
 	}
 
 	ItemStack[] getSavedInventory() {

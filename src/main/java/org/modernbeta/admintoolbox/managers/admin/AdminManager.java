@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.managers.admin.AdminState.TeleportHistory;
@@ -42,36 +43,30 @@ public class AdminManager implements Listener {
 	Map<UUID, AdminState> adminStates = new HashMap<>();
 
 	public void target(Player player, Location location, boolean appending) {
+		if (!isActiveAdmin(player)) {
+			adminStates.put(player.getUniqueId(), AdminState.forPlayer(player));
+			player.getInventory().clear();
+		} else if (appending) {
+			TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
+			if (history != null) {
+				history.add(player.getLocation().clone());
+			}
+		}
+
+		// set spectator before teleporting, so we don't show for a tick
+		player.setGameMode(GameMode.SPECTATOR);
+		adminStates.get(player.getUniqueId()).setStatus(SPECTATING);
 
 		Component actionBarMessage = MiniMessage.miniMessage().deserialize("<gold>Teleporting...");
 		player.sendActionBar(actionBarMessage);
-
-		// set spectator before teleporting so we don't show for a tick
-		GameMode previousGamemode = player.getGameMode();
-		player.setGameMode(GameMode.SPECTATOR);
 
 		player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept((didTeleport) -> {
 			// clear the action bar since the teleport is no longer pending
 			player.sendActionBar(Component.empty());
 
 			if (!didTeleport) {
-				player.setGameMode(previousGamemode);
 				player.sendRichMessage("<red>You weren't teleported! Paper doesn't tell us why. :-/");
-				return;
 			}
-
-			if (!isActiveAdmin(player)) {
-				adminStates.put(player.getUniqueId(), AdminState.forPlayer(player));
-				player.getInventory().clear();
-			} else if (appending) {
-				TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
-				if (history != null) {
-					history.add(player.getLocation().clone());
-				}
-			}
-
-			// set afterwords otherwise default admin status is set, not spectating
-			adminStates.get(player.getUniqueId()).setStatus(SPECTATING);
 		});
 	}
 
@@ -126,10 +121,10 @@ public class AdminManager implements Listener {
 
 				player.setGameMode(GameMode.SURVIVAL);
 				player.getInventory().setContents(originalInventory);
-				adminStates.remove(uuid);
 
-				FileConfiguration adminStateFile = plugin.getAdminStateConfig();
-				adminStateFile.set(player.getUniqueId().toString(), null);
+				adminStates.remove(uuid);
+				FileConfiguration adminStateConfig = plugin.getAdminStateConfig();
+				adminStateConfig.set(player.getUniqueId().toString(), null);
 				plugin.saveAdminStateConfig();
 
 				BlueMapAPI.getInstance().ifPresent((blueMap) -> {
@@ -232,6 +227,13 @@ public class AdminManager implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
+	void onPluginDisable(PluginDisableEvent disableEvent) {
+		for (AdminState adminState : adminStates.values()) {
+			adminState.saveToFile();
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
 	void onAdminJoin(PlayerJoinEvent joinEvent) {
 		Player player = joinEvent.getPlayer();
 		Optional.ofNullable(loadStateFromFile(player.getUniqueId()))
@@ -251,10 +253,6 @@ public class AdminManager implements Listener {
 					"<green>Your <revealed>admin session has been restored.",
 					Placeholder.unparsed("revealed", state.getStatus() == REVEALED ? "revealed " : "")
 				);
-
-				FileConfiguration adminState = plugin.getAdminStateConfig();
-				adminState.set(player.getUniqueId().toString(), null);
-				plugin.saveAdminStateConfig();
 			});
 	}
 
