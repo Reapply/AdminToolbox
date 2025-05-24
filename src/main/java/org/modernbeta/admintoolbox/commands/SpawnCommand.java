@@ -2,9 +2,7 @@ package org.modernbeta.admintoolbox.commands;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,6 +15,8 @@ import org.modernbeta.admintoolbox.PermissionAudience;
 import org.modernbeta.admintoolbox.utils.LocationUtils;
 
 import java.util.List;
+
+import static org.modernbeta.admintoolbox.utils.LocationUtils.getWorldNameCompletions;
 
 public class SpawnCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
@@ -77,11 +77,7 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 		if(!sender.hasPermission(TARGET_SPAWN_PERMISSION)) return List.of();
 
 		String partialName = args[0].toLowerCase();
-
-		return Bukkit.getOnlinePlayers().stream()
-			.map(Player::getName)
-			.filter(name -> name.toLowerCase().startsWith(partialName) && !name.equals(sender.getName()))
-			.toList();
+		return getWorldNameCompletions(partialName).toList();
 	}
 
 	private void sendNoPermissionMessage(CommandSender sender) {
