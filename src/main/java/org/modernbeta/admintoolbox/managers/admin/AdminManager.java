@@ -114,6 +114,10 @@ public class AdminManager implements Listener {
 				player.getInventory().setContents(originalInventory);
 				adminStates.remove(uuid);
 
+				FileConfiguration adminStateFile = plugin.getAdminStateConfig();
+				adminStateFile.set(player.getUniqueId().toString(), null);
+				plugin.saveAdminStateConfig();
+
 				BlueMapAPI.getInstance().ifPresent((blueMap) -> {
 					adminState.getSavedMapVisibility().ifPresent((visibility) -> {
 						blueMap.getWebApp().setPlayerVisibility(player.getUniqueId(), visibility);
