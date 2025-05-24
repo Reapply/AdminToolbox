@@ -63,8 +63,6 @@ public class AdminToolboxPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-		adminManager.restoreAll();
-
         getLogger().info(String.format("Disabled %s", getPluginMeta().getDisplayName()));
     }
 
