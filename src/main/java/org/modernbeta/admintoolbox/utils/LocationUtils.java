@@ -9,6 +9,7 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class LocationUtils {
 	public static @NotNull CompletableFuture<Location> getHighestLocation(World world, int x, int z) {
@@ -39,6 +40,19 @@ public class LocationUtils {
 		}
 
 		return null;
+	}
+
+	public static Stream<String> getWorldNameCompletions(String partialName) {
+		String partialNameLower = partialName.toLowerCase();
+
+		Stream<String> fullWorldNames = Bukkit.getWorlds().stream()
+			.map(World::getName);
+
+		Stream<String> shortWorldNames = Bukkit.getWorlds().stream()
+			.map(LocationUtils::getShortWorldName);
+
+		return Stream.concat(fullWorldNames, shortWorldNames)
+			.filter((name) -> name.toLowerCase().startsWith(partialNameLower));
 	}
 
 	public static String getShortWorldName(World world) {
