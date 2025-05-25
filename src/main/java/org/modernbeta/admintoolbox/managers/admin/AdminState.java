@@ -11,7 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -46,6 +48,7 @@ public class AdminState {
 			blueMap.getWebApp().setPlayerVisibility(player.getUniqueId(), false);
 		});
 
+
 		return new AdminState(
 			player.getUniqueId(),
 			new TeleportHistory<>(player.getLocation().clone()),
@@ -73,7 +76,7 @@ public class AdminState {
 								"Item in %s's inventory at position %d was not an ItemStack. This is a bug!\n\tFound: %s",
 								playerId,
 								i,
-								obj.toString()
+								obj
 							)
 						);
 						continue;
