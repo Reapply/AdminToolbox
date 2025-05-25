@@ -27,11 +27,11 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import org.modernbeta.admintoolbox.managers.admin.AdminState.TeleportHistory;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.modernbeta.admintoolbox.commands.TargetCommand.TARGET_PLAYER_PERMISSION;
 import static org.modernbeta.admintoolbox.managers.admin.AdminState.Status.REVEALED;
@@ -40,34 +40,38 @@ import static org.modernbeta.admintoolbox.managers.admin.AdminState.Status.SPECT
 public class AdminManager implements Listener {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
-	Map<UUID, AdminState> adminStates = new HashMap<>();
+	Map<UUID, AdminState> adminStates = new ConcurrentHashMap<>();
 
 	public void target(Player player, Location location, boolean appending) {
-		if (!isActiveAdmin(player)) {
-			adminStates.put(player.getUniqueId(), AdminState.forPlayer(player));
-			player.getInventory().clear();
-		} else if (appending) {
-			TeleportHistory<Location> history = adminStates.get(player.getUniqueId()).getTeleportHistory();
-			if (history != null) {
-				history.add(player.getLocation().clone());
+		final AdminState state = getAdminState(player).orElse(AdminState.forPlayer(player));
+
+		player.getScheduler().run(plugin, (task) -> {
+			if (!isActiveAdmin(player)) {
+				player.getInventory().clear();
+			} else if (appending) {
+				TeleportHistory<Location> history = state.getTeleportHistory();
+				if (history != null) {
+					history.add(player.getLocation().clone());
+				}
 			}
-		}
 
-		// set spectator before teleporting, so we don't show for a tick
-		player.setGameMode(GameMode.SPECTATOR);
-		adminStates.get(player.getUniqueId()).setStatus(SPECTATING);
+			// set spectator before teleporting, so we don't show for a tick
+			player.setGameMode(GameMode.SPECTATOR);
+			state.setStatus(SPECTATING);
+			adminStates.put(player.getUniqueId(), state);
 
-		Component actionBarMessage = MiniMessage.miniMessage().deserialize("<gold>Teleporting...");
-		player.sendActionBar(actionBarMessage);
+			Component actionBarMessage = MiniMessage.miniMessage().deserialize("<gold>Teleporting...");
+			player.sendActionBar(actionBarMessage);
 
-		player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept((didTeleport) -> {
-			// clear the action bar since the teleport is no longer pending
-			player.sendActionBar(Component.empty());
+			player.teleportAsync(location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept((didTeleport) -> {
+				// clear the action bar since the teleport is no longer pending
+				player.sendActionBar(Component.empty());
 
-			if (!didTeleport) {
-				player.sendRichMessage("<red>You weren't teleported! Paper doesn't tell us why. :-/");
-			}
-		});
+				if (!didTeleport) {
+					player.sendRichMessage("<red>Error: You couldn't be teleported! This is probably a Paper bug.");
+				}
+			});
+		}, null);
 	}
 
 	public void target(Player admin, Location location) {
