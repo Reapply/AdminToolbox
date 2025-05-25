@@ -189,22 +189,24 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 		}
 
 		targetLocationFuture.thenAccept((location -> {
-			plugin.getAdminManager().target(player, location);
-			sender.sendRichMessage(
-				"<gold>Spectating at <target>",
-				Placeholder.unparsed("target", targetLabel.get())
-			);
+			player.getScheduler().run(plugin, (task) -> {
+				plugin.getAdminManager().target(player, location);
+				sender.sendRichMessage(
+					"<gold>Spectating at <target>",
+					Placeholder.unparsed("target", targetLabel.get())
+				);
 
-			if (!sender.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
-				PermissionAudience adminAudience = plugin.getAdminAudience()
-					.excluding(player);
-				adminAudience
-					.sendMessage(MiniMessage.miniMessage().deserialize(
-						"<gold><admin> is spectating <target>",
-						Placeholder.unparsed("admin", sender.getName()),
-						Placeholder.unparsed("target", targetLabel.get())
-					));
-			}
+				if (!sender.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
+					PermissionAudience adminAudience = plugin.getAdminAudience()
+						.excluding(player);
+					adminAudience
+						.sendMessage(MiniMessage.miniMessage().deserialize(
+							"<gold><admin> is spectating <target>",
+							Placeholder.unparsed("admin", sender.getName()),
+							Placeholder.unparsed("target", targetLabel.get())
+						));
+				}
+			}, null);
 		})).exceptionally(ex -> {
 			Throwable cause = ex.getCause();
 			switch (cause) {
