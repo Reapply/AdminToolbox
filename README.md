@@ -4,21 +4,34 @@ Effective Minecraft moderation tools designed to prevent cheating, maintaining s
 
 **AdminToolbox natively supports [Folia][folia].**
 
-## Commands
+## Features & Commands
 
 ### Spectate
 
 `/spectate`, `/admin`, `/target`
 
-Enter admin mode at current location. In this mode, the admin's inventory is cleared and they are put into spectator mode.
+Spectate at current location and enter admin mode. In admin mode, the player's inventory is cleared and restored when
+they exit admin mode.
 
-While spectating, the admin can use the command again to exit "admin mode". They will be teleported back to their original location and placed back into survival mode with their original inventory.
+While spectating, the player can use the command again to exit admin mode. The player will be teleported back to their
+original location, placed back into survival mode, and their original inventory will be restored.
 
 #### Target Locations
 
+- `/target` - Enter admin mode at current location
 - `/target <player>` - Enter admin mode at a specified player's location
 - `/target <x> <y> <z> [world]` - Enter admin mode at specific coordinates
 - `/target <x> <z> [world]` - Enter admin mode at specific coordinates (uses the highest Y level at that location)
+
+#### Targeting Spawn
+
+`/spawn`, `/targetspawn`
+
+In [version 1.1.0](https://github.com/ModernBetaNetwork/AdminToolbox/releases/tag/v1.1.0), a new command to target spawn
+was added.
+
+- `/spawn` - Enter admin mode at the current world's spawn point
+- `/spawn <world>` - Enter admin mode at the provided world's spawn point
 
 #### Navigation
 
@@ -45,34 +58,38 @@ Use the pipe character (`|`) to separate title and subtitle: `title | subtitle`.
 Legacy ampersand [color codes] are supported. (i.e. `Don't steal! | Please reread the &e/rules&r.`)
 
 ![A large red title displays within Minecraft: "No stealing!" A smaller subtitle below it reads "Did you read the /rules?", and "/rules" is highlighted in yellow.](./.assets/demo-yell.jpg)
+
 ### Freeze
 
 `/freeze <player>`
 
-Stop a player from moving around, forcing them to stay locked in place. Frozen players:
+Stop a player from moving around, forcing them to stay in-place. Primarily useful during confrontations.
 
-- Can still look around
-- Will fall if in midair
-- Cannot place or break blocks
-- Cannot interact with the world
-- Cannot hurt entities
-- Are immune to damage
+Frozen players:
+
+- can still look around
+- can still fall (useful if frozen in midair)
+- cannot place or break blocks
+- cannot take any damage
+- cannot hurt other entities (including players)
 
 To unfreeze a player, use `/unfreeze <player>`
 
 ## Permissions
 
-| Permission                       | Command                       | Description                                 |
-|----------------------------------|-------------------------------|---------------------------------------------|
-| `admintoolbox.target`            | `/admin`, `/target`           | Allows entering admin mode                  |
-| `admintoolbox.target.player`     | `/target <player>`            | Enter admin mode at a player's location     |
-| `admintoolbox.target.location`   | `/target <x> [y] <z> [world]` | Enter admin mode at given coordinates       |
-| `admintoolbox.reveal`            | `/reveal`                     | Allows becoming visible while in admin mode |
-| `admintoolbox.yell`              | `/yell`                       | Allows sending forceful messages to players |
-| `admintoolbox.freeze`            | `/freeze`                     | Allows freezing and unfreezing players      |
-| `admintoolbox.broadcast.receive` |                               | Receive alerts about other admins' actions  |
-| `admintoolbox.broadcast.exempt`  |                               | Actions will not alert other admins         |
-| `admintoolbox.admin`             |                               | Access to all AdminToolbox features         |
+| Permission                       | Command                       | Description                                                                                                                                         |
+|----------------------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `admintoolbox.target`            | `/admin`, `/target`           | Spectate at current location                                                                                                                        |
+| `admintoolbox.target.player`     | `/target <player>`            | Spectate at a player's location                                                                                                                     |
+| `admintoolbox.target.location`   | `/target <x> [y] <z> [world]` | Spectate at provided coordinates                                                                                                                    |
+| `admintoolbox.reveal`            | `/reveal`                     | Reveal while spectating in admin mode                                                                                                               |
+| `admintoolbox.yell`              | `/yell`                       | Show titles to other players                                                                                                                        |
+| `admintoolbox.freeze`            | `/freeze`                     | Freeze and unfreeze players                                                                                                                         |
+| `admintoolbox.spawn`             | `/spawn`                      | Spectate at current world spawn                                                                                                                     |
+| `admintoolbox.spawn.all`         | `/spawn [world]`              | Spectate at all world spawns                                                                                                                        |
+| `admintoolbox.broadcast.receive` |                               | Receive alerts about other admins' actions                                                                                                          |
+| `admintoolbox.broadcast.exempt`  |                               | Admin actions will not alert others who can receive them                                                                                            |
+| `admintoolbox.admin`             |                               | Access to core AdminToolbox features. (**Deprecated**: Only for backward compatibility. This permission will be removed in the next major version.) |
 
 ## Integrations
 
