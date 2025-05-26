@@ -8,31 +8,31 @@ softdepend: [ BlueMap, SuperVanish, PremiumVanish ]
 
 permissions:
   admintoolbox.target:
-    description: Can use the target command at own location.
+    description: Can spectate at current location.
   admintoolbox.target.player:
-    description: Can target specific players' locations.
+    description: Can spectate at a player's location.
     children: [ admintoolbox.target ]
   admintoolbox.target.location:
-    description: Can target specific coordinates.
+    description: Can spectate at provided coordinates.
     children: [ admintoolbox.target ]
   admintoolbox.spawn:
-    description: Can target at world spawn.
+    description: Can spectate at current world spawn.
   admintoolbox.spawn.all:
-    description: Can target all world spawns.
+    description: Can spectate at all world spawns.
     children: [ admintoolbox.spawn ]
   admintoolbox.reveal:
-    description: Can reveal from spectator mode.
+    description: Can reveal while spectating in admin mode.
   admintoolbox.freeze:
-    description: Can freeze and unfreeze other players.
+    description: Can freeze and unfreeze players.
   admintoolbox.yell:
-    description: Can forcibly show big red text to other players.
+    description: Can show titles to other players.
   admintoolbox.broadcast.receive:
-    description: Should receive broadcasts about actions by other admins.
+    description: Can receive alerts about other admins' actions.
   admintoolbox.broadcast.exempt:
-    description: Admin actions should NOT broadcast to other admins.
+    description: Admin actions will not alert others who can receive them.
     default: false
   # Legacy catch-all admin permission. Children list is designed to be
-  # backwards-compatible with previous versions of AdminToolbox.
+  # backwards-compatible with pre-1.0.0 versions of AdminToolbox.
   admintoolbox.admin:
     description: Can perform core AdminToolbox actions.
     children:
@@ -47,44 +47,44 @@ default-permission: op
 
 commands:
   spectate:
-    description: Enter spectator mode, optionally at a specific player or coordinate location.
+    description: Spectate in admin mode, optionally at a provided location.
     usage: |
       /<command> [player]
       /<command> <x> [y] <z> [world]
     permission: admintoolbox.target
     aliases: [ admin, spec, target ]
   reveal:
-    description: Puts admin in spectating mode in survival mode to show themselves to the target player
+    description: Reveal to other players while spectating in admin mode.
     usage: /<command>
     permission: admintoolbox.reveal
     aliases: [ show ]
   back:
-    description: Teleports an admin to their previous teleported location
+    description: Teleport backward in admin teleport history.
     usage: /<command>
     permission: admintoolbox.target
     aliases: [ last, previous, prev ]
   forward:
-    description: Teleports an admin back to where they were before their previous /back
+    description: Teleport forward in admin teleport history.
     usage: /<command>
     permission: admintoolbox.target
     aliases: [ next ]
   freeze:
-    description: Stops a given player from moving.
+    description: Freeze a player, removing their ability to move or interact with the world.
     usage: /<command> <player>
     permission: admintoolbox.freeze
     aliases: [ capture ]
   unfreeze:
-    description: Allows a frozen player to move once again.
+    description: Unfreeze a frozen player.
     usage: /<command> <player>
     permission: admintoolbox.freeze
     aliases: [ release ]
   yell:
-    description: Display a big red title message on a player's screen.
+    description: Display a large red title message on a player's screen.
     usage: /<command> <player> <message>
     permission: admintoolbox.yell
     aliases: [ y, adminsay ]
   spawn:
-    description: Enter spectating mode at a given world spawn.
+    description: Enter admin mode at a given world spawn.
     usage: /<command> [world]
     aliases: [ targetspawn ]
     permission: admintoolbox.spawn
