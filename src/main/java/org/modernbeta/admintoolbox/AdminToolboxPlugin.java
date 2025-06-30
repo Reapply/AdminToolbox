@@ -2,6 +2,7 @@ package org.modernbeta.admintoolbox;
 
 import de.myzelyam.api.vanish.VanishAPI;
 import de.myzelyam.supervanish.SuperVanish;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,6 +13,7 @@ import org.modernbeta.admintoolbox.managers.admin.AdminManager;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -58,6 +60,8 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		getCommand("yell").setExecutor(new YellCommand());
 		getCommand("spawn").setExecutor(new SpawnCommand());
 		getCommand("streamermode").setExecutor(new StreamerModeCommand());
+
+		initializeConfig();
 
 		getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
 	}
@@ -113,8 +117,30 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		return broadcastAudience;
 	}
 
-
 	public Optional<SuperVanish> getVanish() {
 		return Optional.ofNullable(VanishAPI.getPlugin());
+	}
+
+	private void initializeConfig() {
+		FileConfiguration config = getConfig();
+		YamlConfiguration defaults = new YamlConfiguration();
+
+		{
+			ConfigurationSection streamerMode = defaults.createSection("streamer-mode");
+			streamerMode.set("allow", true);
+			streamerMode.set("max-duration", 2400);
+			// TODO: fill in default disabled permission(s) -- just admintoolbox.broadcast.receive?
+			streamerMode.set("disable-permissions", List.of());
+
+			// docs
+			streamerMode.setInlineComments("allow", List.of("Enable or disable usage of Streamer Mode. 'true' enables usage of Streamer Mode, while 'false' disables Streamer Mode entirely."));
+			streamerMode.setInlineComments("max-duration", List.of("The maximum duration a player can enable Streamer Mode for, in minutes."));
+			streamerMode.setInlineComments("disable-permissions", List.of("The list of permissions to disable for the given time period."));
+		}
+
+		config.setDefaults(defaults);
+		config.options().copyDefaults(true);
+
+		saveConfig();
 	}
 }
