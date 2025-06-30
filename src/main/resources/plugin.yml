@@ -43,6 +43,8 @@ permissions:
       - admintoolbox.freeze
       - admintoolbox.yell
       - admintoolbox.broadcast.receive
+  admintoolbox.streamermode:
+    description: Can enter and exit Streamer Mode.
 default-permission: op
 
 commands:
@@ -88,3 +90,8 @@ commands:
     usage: /<command> [world]
     aliases: [ targetspawn ]
     permission: admintoolbox.spawn
+  streamermode:
+    description: Enter Streamer Mode, temporarily disabling certain privileges.
+    usage: /<command> [duration]
+    aliases: [ sm, hidealerts, ha, alertsoff, pausealerts, pa ]
+    permission: admintoolbox.streamermode
