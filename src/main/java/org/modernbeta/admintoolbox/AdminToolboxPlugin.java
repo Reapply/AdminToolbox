@@ -16,10 +16,10 @@ import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
 public class AdminToolboxPlugin extends JavaPlugin {
-    static AdminToolboxPlugin instance;
+	static AdminToolboxPlugin instance;
 
 	AdminManager adminManager;
-    FreezeManager freezeManager;
+	FreezeManager freezeManager;
 
 	PermissionAudience broadcastAudience;
 
@@ -34,20 +34,20 @@ public class AdminToolboxPlugin extends JavaPlugin {
 	private static final String BROADCAST_AUDIENCE_PERMISSION = "admintoolbox.broadcast.receive";
 	public static final String BROADCAST_EXEMPT_PERMISSION = "admintoolbox.broadcast.exempt";
 
-    @Override
-    public void onEnable() {
-        instance = this;
+	@Override
+	public void onEnable() {
+		instance = this;
 
 		this.adminManager = new AdminManager();
-        this.freezeManager = new FreezeManager();
+		this.freezeManager = new FreezeManager();
 
 		this.broadcastAudience = new PermissionAudience(BROADCAST_AUDIENCE_PERMISSION);
 
 		createAdminStateConfig();
 		this.adminStateConfig = getAdminStateConfig();
 
-        getServer().getPluginManager().registerEvents(adminManager, this);
-        getServer().getPluginManager().registerEvents(freezeManager, this);
+		getServer().getPluginManager().registerEvents(adminManager, this);
+		getServer().getPluginManager().registerEvents(freezeManager, this);
 
 		getCommand("target").setExecutor(new TargetCommand());
 		getCommand("reveal").setExecutor(new RevealCommand());
@@ -59,17 +59,17 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		getCommand("spawn").setExecutor(new SpawnCommand());
 		getCommand("streamermode").setExecutor(new StreamerModeCommand());
 
-        getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
-    }
+		getLogger().info(String.format("Enabled %s", getPluginMeta().getDisplayName()));
+	}
 
-    @Override
-    public void onDisable() {
-        getLogger().info(String.format("Disabled %s", getPluginMeta().getDisplayName()));
-    }
+	@Override
+	public void onDisable() {
+		getLogger().info(String.format("Disabled %s", getPluginMeta().getDisplayName()));
+	}
 
 	private void createAdminStateConfig() {
 		this.adminStateConfigFile = new File(getDataFolder(), ADMIN_STATE_CONFIG_FILENAME);
-		if(!this.adminStateConfigFile.exists()) {
+		if (!this.adminStateConfigFile.exists()) {
 			this.adminStateConfigFile.getParentFile().mkdirs();
 			saveResource(ADMIN_STATE_CONFIG_FILENAME, false);
 		}
@@ -112,7 +112,6 @@ public class AdminToolboxPlugin extends JavaPlugin {
 	public PermissionAudience getAdminAudience() {
 		return broadcastAudience;
 	}
-
 
 
 	public Optional<SuperVanish> getVanish() {
