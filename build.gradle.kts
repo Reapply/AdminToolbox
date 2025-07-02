@@ -40,7 +40,7 @@ tasks.processResources {
 }
 
 val plugins = runPaper.downloadPluginsSpec {
-	modrinth("viaversion", "5.3.2") // makes testing much easier
+	modrinth("viaversion", "5.4.1") // makes testing much easier
 	modrinth("bluemap", "5.5-paper")
 }
 
