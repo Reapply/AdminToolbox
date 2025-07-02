@@ -45,10 +45,20 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		}
 		LuckPerms luckPerms = plugin.getLuckPermsAPI().get();
 
+		List<String> disablePermissions = plugin.getConfig().getStringList("streamer-mode.disable-permissions");
+		User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
+
 		if (isStreamerModeActive(luckPerms, player)) {
 			if (args.length > 0) return false;
 
-			// TODO: disable Streamer Mode
+			user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_META_KEY)));
+			user.data().clear(NodeType.PERMISSION.predicate((node) -> // only delete negated, expiring nodes that match configured permissions
+				node.isNegated()
+					&& node.getExpiryDuration() != null
+					&& disablePermissions.contains(node.getPermission())
+			));
+
+			sender.sendRichMessage("<gold>Streamer Mode has been disabled.");
 			return true;
 		}
 
@@ -64,7 +74,6 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 		Duration duration = parsedDuration.get();
 
-		User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
 		MetaNode metaNode = MetaNode.builder()
 			.key(STREAMER_MODE_META_KEY)
 			.value(Boolean.toString(true))
@@ -75,7 +84,6 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		user.data().add(metaNode);
 
 		// using LuckPerms API, add negated/'false' versions of permissions from config.yml to user for duration
-		List<String> disablePermissions = plugin.getConfig().getStringList("streamer-mode.disable-permissions");
 		for (String permission : disablePermissions) {
 			Node permissionNode = PermissionNode.builder()
 				.permission(permission)
