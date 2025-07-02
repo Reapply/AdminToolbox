@@ -39,6 +39,11 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 			return true;
 		}
 
+		if (!plugin.getConfig().getBoolean("streamer-mode.allow", false)) {
+			sender.sendRichMessage("<red>Streamer Mode is disabled on this server.<addendum>",
+				Placeholder.unparsed("addendum", player.isOp() ? " (streamer-mode -> allow is 'false' in config.yml)" : ""));
+			return true;
+		}
 		if (plugin.getLuckPermsAPI().isEmpty()) {
 			sender.sendRichMessage("<red>LuckPerms is required to use Streamer Mode. Is it enabled?");
 			return true;
