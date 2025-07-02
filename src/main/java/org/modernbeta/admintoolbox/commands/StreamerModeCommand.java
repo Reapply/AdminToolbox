@@ -28,7 +28,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	private static final String STREAMER_MODE_COMMAND_PERMISSION = "admintoolbox.streamermode";
-	private static final String STREAMER_MODE_META_KEY = "admintoolbox-streamermode";
+	private static final String STREAMER_MODE_META_KEY = "at-streamer-mode-enabled";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
