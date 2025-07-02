@@ -97,6 +97,8 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 		luckPerms.getUserManager().saveUser(user);
 
+		sender.sendRichMessage("<gold>Streamer Mode will be enabled for <yellow><duration></yellow>.",
+			Placeholder.unparsed("duration", duration.toString())); // TODO: do nice duration formatting!
 		return true;
 	}
 
