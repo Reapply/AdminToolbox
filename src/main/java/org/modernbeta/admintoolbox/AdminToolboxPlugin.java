@@ -1,8 +1,11 @@
 package org.modernbeta.admintoolbox;
 
+import net.luckperms.api.LuckPerms;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.modernbeta.admintoolbox.commands.*;
 import org.modernbeta.admintoolbox.managers.FreezeManager;
@@ -23,6 +26,9 @@ public class AdminToolboxPlugin extends JavaPlugin {
 
 	PermissionAudience broadcastAudience;
 
+	@Nullable
+	private LuckPerms luckPermsAPI;
+
 	private File adminStateConfigFile;
 	private FileConfiguration adminStateConfig;
 
@@ -39,6 +45,11 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		this.freezeManager = new FreezeManager();
 
 		this.broadcastAudience = new PermissionAudience(BROADCAST_AUDIENCE_PERMISSION);
+
+		{
+			RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+			if (provider != null) this.luckPermsAPI = provider.getProvider();
+		}
 
 		createAdminStateConfig();
 		this.adminStateConfig = getAdminStateConfig();
@@ -110,6 +121,10 @@ public class AdminToolboxPlugin extends JavaPlugin {
 
 	public PermissionAudience getAdminAudience() {
 		return broadcastAudience;
+	}
+
+	public Optional<LuckPerms> getLuckPermsAPI() {
+		return Optional.ofNullable(this.luckPermsAPI);
 	}
 
 	private void initializeConfig() {

@@ -22,6 +22,7 @@ repositories {
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+	compileOnly("net.luckperms:api:5.4")
 	implementation("de.bluecolored:bluemap-api:2.7.4")
 }
 

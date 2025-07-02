@@ -4,7 +4,7 @@ authors: [ Karltroid, iLynxcat ]
 main: org.modernbeta.admintoolbox.AdminToolboxPlugin
 api-version: '1.20'
 folia-supported: true
-softdepend: [ BlueMap ]
+softdepend: [ BlueMap, LuckPerms ]
 
 permissions:
   admintoolbox.target:
