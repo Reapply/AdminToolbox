@@ -1,9 +1,12 @@
 package org.modernbeta.admintoolbox.commands;
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.MetaNode;
+import net.luckperms.api.node.types.PermissionNode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,7 +21,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,13 +54,21 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 		if(args.length != 1) return false;
 
-		// TODO: parse duration arg
+		Optional<Duration> parsedDuration = parseDuration(args[0]);
+
+		if (parsedDuration.isEmpty()) {
+			sender.sendRichMessage("<red>'<yellow><input></yellow>' is not a supported duration!",
+				Placeholder.unparsed("input", args[0]));
+			return true;
+		}
+
+		Duration duration = parsedDuration.get();
 
 		User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
 		MetaNode metaNode = MetaNode.builder()
 			.key(STREAMER_MODE_META_KEY)
 			.value(Boolean.toString(true))
-			.expiry(1, TimeUnit.HOURS) // TODO: use parsed duration here
+			.expiry(duration)
 			.build();
 
 		user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_META_KEY)));
