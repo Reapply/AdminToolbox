@@ -13,8 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
@@ -69,6 +75,41 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		// if player is in Streamer Mode, do not validate/suggest duration
 
 		return List.of();
+	}
+
+	/// Rudimentary regex-based parser for durations.
+	///
+	/// ## Examples
+	/// - `5h` -> 5 hours
+	/// - `15m` -> 15 minutes
+	///
+	/// ## Note
+	/// <strong>Only one duration segment is supported.</strong> That means durations such as
+	/// '1h15m' will fail to parse.
+	private Optional<Duration> parseDuration(String input) {
+		Pattern durationPattern = Pattern.compile("^\\s*(?<num>\\d{1,3})(?<unit>[mh])\\s*$", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = durationPattern.matcher(input);
+
+		if (!matcher.matches())
+			return Optional.empty();
+
+		String inputNumber = matcher.group("num");
+		String inputUnit = matcher.group("unit");
+
+		// skipping try/catch on NumberFormatException here because this capture group can only
+		// contain digits (\d)!
+		int durationNumber = Integer.parseInt(inputNumber);
+		TemporalUnit unit;
+
+		switch (inputUnit.toLowerCase()) {
+			case "h" -> unit = ChronoUnit.HOURS;
+			case "m" -> unit = ChronoUnit.MINUTES;
+			default -> { // unit is invalid!
+				return Optional.empty();
+			}
+		}
+
+		return Optional.of(Duration.of(durationNumber, unit));
 	}
 
 	private boolean isStreamerModeActive(LuckPerms luckPerms, Player player) {
