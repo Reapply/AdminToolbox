@@ -37,12 +37,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		}
 		LuckPerms luckPerms = plugin.getLuckPermsAPI().get();
 
-		boolean isStreamerModeActive = luckPerms.getPlayerAdapter(Player.class)
-			.getMetaData(player)
-			.getMetaValue(STREAMER_MODE_META_KEY, Boolean::valueOf)
-			.orElse(false);
-
-		if (isStreamerModeActive) {
+		if (isStreamerModeActive(luckPerms, player)) {
 			if (args.length > 0) return false;
 
 			// TODO: disable Streamer Mode
@@ -74,5 +69,12 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		// if player is in Streamer Mode, do not validate/suggest duration
 
 		return List.of();
+	}
+
+	private boolean isStreamerModeActive(LuckPerms luckPerms, Player player) {
+		return luckPerms.getPlayerAdapter(Player.class)
+			.getMetaData(player)
+			.getMetaValue(STREAMER_MODE_META_KEY, Boolean::valueOf)
+			.orElse(false);
 	}
 }
