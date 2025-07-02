@@ -2,6 +2,7 @@ package org.modernbeta.admintoolbox;
 
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -128,9 +129,14 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		return Optional.ofNullable(this.luckPermsAPI);
 	}
 
-	private void initializeConfig() {
-		FileConfiguration config = getConfig();
-		YamlConfiguration defaults = new YamlConfiguration();
+	@Override
+	public void reloadConfig() {
+		super.reloadConfig();
+		getConfig().setDefaults(getConfigDefaults());
+	}
+
+	public Configuration getConfigDefaults() {
+		Configuration defaults = new YamlConfiguration();
 
 		{
 			ConfigurationSection streamerMode = defaults.createSection("streamer-mode");
@@ -144,6 +150,13 @@ public class AdminToolboxPlugin extends JavaPlugin {
 			streamerMode.setInlineComments("max-duration", List.of("The maximum duration a player can enable Streamer Mode for, in minutes."));
 			streamerMode.setInlineComments("disable-permissions", List.of("The list of permissions to disable for the given time period."));
 		}
+
+		return defaults;
+	}
+
+	private void initializeConfig() {
+		FileConfiguration config = getConfig();
+		Configuration defaults = getConfigDefaults();
 
 		config.setDefaults(defaults);
 		config.options().copyDefaults(true);
