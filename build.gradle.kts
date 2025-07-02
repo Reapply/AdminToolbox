@@ -18,14 +18,10 @@ repositories {
     maven("https://repo.bluecolored.de/releases") {
         name = "bluemap"
     }
-	maven("https://jitpack.io") {
-		name = "jitpack"
-	}
 }
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-	implementation("com.github.LeonMangler:SuperVanish:6.2.18-3")
 	implementation("de.bluecolored:bluemap-api:2.7.4")
 }
 
@@ -52,8 +48,7 @@ tasks.runServer {
 	minecraftVersion("1.20.4")
 	downloadPlugins {
 		from(plugins)
-		// SuperVanish does not support Folia, so it only goes in the plain Paper server
-		github("LeonMangler", "SuperVanish", "6.2.18", "SuperVanish-6.2.18.jar")
+		// Add Folia-incompatible plugins below
 	}
 }
 

@@ -1,7 +1,5 @@
 package org.modernbeta.admintoolbox;
 
-import de.myzelyam.api.vanish.VanishAPI;
-import de.myzelyam.supervanish.SuperVanish;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,9 +22,6 @@ public class AdminToolboxPlugin extends JavaPlugin {
 	FreezeManager freezeManager;
 
 	PermissionAudience broadcastAudience;
-
-	@Nullable
-	SuperVanish superVanish;
 
 	private File adminStateConfigFile;
 	private FileConfiguration adminStateConfig;
@@ -115,10 +110,6 @@ public class AdminToolboxPlugin extends JavaPlugin {
 
 	public PermissionAudience getAdminAudience() {
 		return broadcastAudience;
-	}
-
-	public Optional<SuperVanish> getVanish() {
-		return Optional.ofNullable(VanishAPI.getPlugin());
 	}
 
 	private void initializeConfig() {
