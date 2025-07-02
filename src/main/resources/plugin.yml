@@ -6,6 +6,7 @@ api-version: '1.20'
 folia-supported: true
 softdepend: [ BlueMap, LuckPerms ]
 
+default-permission: op
 permissions:
   admintoolbox.target:
     description: Can spectate at current location.
@@ -45,7 +46,6 @@ permissions:
       - admintoolbox.broadcast.receive
   admintoolbox.streamermode:
     description: Can enter and exit Streamer Mode.
-default-permission: op
 
 commands:
   spectate:
@@ -93,5 +93,5 @@ commands:
   streamermode:
     description: Enter Streamer Mode, temporarily disabling certain privileges.
     usage: /<command> [duration]
-    aliases: [ sm, hidealerts, ha, alertsoff, pausealerts, pa ]
+    aliases: [ sm, pausealerts, pa ]
     permission: admintoolbox.streamermode
