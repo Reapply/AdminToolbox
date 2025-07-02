@@ -57,6 +57,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(adminManager, this);
 		getServer().getPluginManager().registerEvents(freezeManager, this);
 
+		getCommand("admintoolbox").setExecutor(new PluginManageCommand());
 		getCommand("target").setExecutor(new TargetCommand());
 		getCommand("reveal").setExecutor(new RevealCommand());
 		getCommand("back").setExecutor(new GoBackCommand());

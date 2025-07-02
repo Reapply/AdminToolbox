@@ -8,6 +8,12 @@ softdepend: [ BlueMap, LuckPerms ]
 
 default-permission: op
 permissions:
+  admintoolbox.manage:
+    description: Can use the AdminToolbox management command.
+    default: true
+  admintoolbox.manage.reload:
+    description: Can reload AdminToolbox's configuration.
+    children: [ admintoolbox.manage ]
   admintoolbox.target:
     description: Can spectate at current location.
   admintoolbox.target.player:
@@ -48,6 +54,11 @@ permissions:
     description: Can enter and exit Streamer Mode.
 
 commands:
+  admintoolbox:
+    description: Manage the AdminToolbox plugin.
+    usage: /<command> <reload>
+    permission: admintoolbox.manage
+    aliases: [ atb ]
   spectate:
     description: Spectate in admin mode, optionally at a provided location.
     usage: |
