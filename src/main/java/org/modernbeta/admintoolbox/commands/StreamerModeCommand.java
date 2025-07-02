@@ -74,7 +74,17 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_META_KEY)));
 		user.data().add(metaNode);
 
-		// TODO: use LuckPerms API to add negated/'false' versions of permissions from config.yml to user for duration
+		// using LuckPerms API, add negated/'false' versions of permissions from config.yml to user for duration
+		List<String> disablePermissions = plugin.getConfig().getStringList("streamer-mode.disable-permissions");
+		for (String permission : disablePermissions) {
+			Node permissionNode = PermissionNode.builder()
+				.permission(permission)
+				.expiry(duration)
+				.negated(true)
+				.build();
+
+			user.data().add(permissionNode);
+		}
 
 		return true;
 	}
