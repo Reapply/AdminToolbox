@@ -57,6 +57,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 					&& node.getExpiryDuration() != null
 					&& disablePermissions.contains(node.getPermission())
 			));
+			luckPerms.getUserManager().saveUser(user);
 
 			sender.sendRichMessage("<gold>Streamer Mode has been disabled.");
 			return true;
@@ -93,6 +94,8 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 			user.data().add(permissionNode);
 		}
+
+		luckPerms.getUserManager().saveUser(user);
 
 		return true;
 	}
