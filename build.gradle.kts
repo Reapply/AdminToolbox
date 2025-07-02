@@ -50,6 +50,7 @@ tasks.runServer {
 	downloadPlugins {
 		from(plugins)
 		// Add Folia-incompatible plugins below
+		modrinth("luckperms", "v5.5.0-bukkit") // they are working on Folia support but it's not ready yet!
 	}
 }
 
