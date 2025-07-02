@@ -71,10 +71,30 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-		// if first arg is int-parseable, suggest time suffixes m/h (for minutes/hours)
-		// if player is in Streamer Mode, do not validate/suggest duration
+		if (args.length != 1) return List.of();
+		if (plugin.getLuckPermsAPI().isEmpty()) return List.of();
+		if (!(sender instanceof Player player)) return List.of();
 
-		return List.of();
+		// if player is in Streamer Mode, do not validate/suggest duration since this is an 'off' toggle!
+		{
+			LuckPerms luckPerms = plugin.getLuckPermsAPI().get();
+			if (isStreamerModeActive(luckPerms, player)) return List.of();
+		}
+
+		String partialArgument = args[0];
+
+		// if arg is int-parseable, suggest time suffixes m/h (for minutes/hours)
+		try {
+			Integer.parseUnsignedInt(partialArgument);
+		} catch (NumberFormatException e) {
+			return List.of();
+		}
+
+		List<String> supportedUnits = List.of("h", "m");
+
+		return supportedUnits.stream()
+			.map((unit) -> partialArgument + unit) // suggests typed number with units at end - i.e. 15 -> 15m, 15h
+			.toList();
 	}
 
 	/// Rudimentary regex-based parser for durations.
