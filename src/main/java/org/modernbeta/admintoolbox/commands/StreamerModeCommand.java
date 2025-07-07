@@ -112,7 +112,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		luckPerms.getUserManager().saveUser(user);
 
 		sender.sendRichMessage("<gold>Streamer Mode will be enabled for <yellow><duration></yellow>.",
-			Placeholder.unparsed("duration", duration.toString())); // TODO: do nice duration formatting!
+			Placeholder.unparsed("duration", formatDuration(duration)));
 		return true;
 	}
 
@@ -177,6 +177,18 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		}
 
 		return Optional.of(Duration.of(durationNumber, unit));
+	}
+
+	private String formatDuration(Duration duration) {
+		int hours = duration.toHoursPart();
+		int minutes = duration.toMinutesPart();
+
+		List<String> resultList = new ArrayList<>();
+
+		if (hours > 0) resultList.add(hours + " hours");
+		if (minutes > 0) resultList.add(minutes + " minutes");
+
+		return String.join(" ", resultList);
 	}
 
 	private boolean isStreamerModeActive(LuckPerms luckPerms, Player player) {
