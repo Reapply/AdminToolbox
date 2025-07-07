@@ -19,6 +19,7 @@ import org.modernbeta.admintoolbox.AdminToolboxPlugin;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -28,6 +29,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 	private final AdminToolboxPlugin plugin = AdminToolboxPlugin.getInstance();
 
 	private static final String STREAMER_MODE_COMMAND_PERMISSION = "admintoolbox.streamermode";
+	private static final String STREAMER_MODE_BYPASS_MAX_DURATION_PERMISSION = "admintoolbox.streamermode.unlimited";
 	private static final String STREAMER_MODE_META_KEY = "at-streamer-mode-enabled";
 
 	@Override
@@ -79,6 +81,13 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		}
 
 		Duration duration = parsedDuration.get();
+
+		final double maxDurationMinutes = plugin.getConfig().getDouble("streamer-mode.max-duration");
+		if (duration.getSeconds() > (maxDurationMinutes * 60)
+			&& !sender.hasPermission(STREAMER_MODE_BYPASS_MAX_DURATION_PERMISSION)) {
+			sender.sendRichMessage("<red>That duration is above the maximum allowed!");
+			return true;
+		}
 
 		MetaNode metaNode = MetaNode.builder()
 			.key(STREAMER_MODE_META_KEY)
