@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.modernbeta.admintoolbox"
-version = "1.1.2"
+version = "1.2.0"
 
 java {
 	toolchain.languageVersion.set(JavaLanguageVersion.of(21))
