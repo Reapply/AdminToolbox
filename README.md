@@ -75,21 +75,32 @@ Frozen players:
 
 To unfreeze a player, use `/unfreeze <player>`
 
+### Streamer Mode
+
+`/streamermode <duration>`, `/pausealerts <duration>`
+
+Allows players to temporarily disable certain permissions (i.e. those that give them staff-only alerts), intended for
+screen sharing or live-streaming gameplay.
+
+**New in version 1.2.0.**
+
 ## Permissions
 
-| Permission                       | Command                       | Description                                                                                                                                         |
-|----------------------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `admintoolbox.target`            | `/admin`, `/target`           | Spectate at current location                                                                                                                        |
-| `admintoolbox.target.player`     | `/target <player>`            | Spectate at a player's location                                                                                                                     |
-| `admintoolbox.target.location`   | `/target <x> [y] <z> [world]` | Spectate at provided coordinates                                                                                                                    |
-| `admintoolbox.reveal`            | `/reveal`                     | Reveal while spectating in admin mode                                                                                                               |
-| `admintoolbox.yell`              | `/yell`                       | Show titles to other players                                                                                                                        |
-| `admintoolbox.freeze`            | `/freeze`                     | Freeze and unfreeze players                                                                                                                         |
-| `admintoolbox.spawn`             | `/spawn`                      | Spectate at current world spawn                                                                                                                     |
-| `admintoolbox.spawn.all`         | `/spawn [world]`              | Spectate at all world spawns                                                                                                                        |
-| `admintoolbox.broadcast.receive` |                               | Receive alerts about other admins' actions                                                                                                          |
-| `admintoolbox.broadcast.exempt`  |                               | Admin actions will not alert others who can receive them                                                                                            |
-| `admintoolbox.admin`             |                               | Access to core AdminToolbox features. (**Deprecated**: Only for backward compatibility. This permission will be removed in the next major version.) |
+| Permission                            | Command                       | Description                                                                                                                                         |
+|---------------------------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `admintoolbox.target`                 | `/admin`, `/target`           | Spectate at current location                                                                                                                        |
+| `admintoolbox.target.player`          | `/target <player>`            | Spectate at a player's location                                                                                                                     |
+| `admintoolbox.target.location`        | `/target <x> [y] <z> [world]` | Spectate at provided coordinates                                                                                                                    |
+| `admintoolbox.reveal`                 | `/reveal`                     | Reveal while spectating in admin mode                                                                                                               |
+| `admintoolbox.yell`                   | `/yell`                       | Show titles to other players                                                                                                                        |
+| `admintoolbox.freeze`                 | `/freeze`                     | Freeze and unfreeze players                                                                                                                         |
+| `admintoolbox.spawn`                  | `/spawn`                      | Spectate at current world spawn                                                                                                                     |
+| `admintoolbox.spawn.all`              | `/spawn [world]`              | Spectate at all world spawns                                                                                                                        |
+| `admintoolbox.broadcast.receive`      |                               | Receive alerts about other admins' actions                                                                                                          |
+| `admintoolbox.broadcast.exempt`       |                               | Admin actions will not alert others who can receive them                                                                                            |
+| `admintoolbox.admin`                  |                               | Access to core AdminToolbox features. (**Deprecated**: Only for backward compatibility. This permission will be removed in the next major version.) |
+| `admintoolbox.streamermode`           | `/streamermode`               | Enter/exit Streamer Mode, revoking certain permissions.                                                                                             |
+| `admintoolbox.streamermode.unlimited` |                               | Bypass the maximum Streamer Mode duration set in config.yml.                                                                                        |
 
 ## Integrations
 
