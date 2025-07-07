@@ -27,9 +27,6 @@ original location, placed back into survival mode, and their original inventory 
 
 `/spawn`, `/targetspawn`
 
-In [version 1.1.0](https://github.com/ModernBetaNetwork/AdminToolbox/releases/tag/v1.1.0), a new command to target spawn
-was added.
-
 - `/spawn` - Enter admin mode at the current world's spawn point
 - `/spawn <world>` - Enter admin mode at the provided world's spawn point
 
