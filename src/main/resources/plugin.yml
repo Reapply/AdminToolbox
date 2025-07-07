@@ -51,6 +51,8 @@ permissions:
       - admintoolbox.broadcast.receive
   admintoolbox.streamermode:
     description: Can enter and exit Streamer Mode.
+  admintoolbox.streamermode.unlimited:
+    description: Can bypass maximum duration in Streamer Mode.
 
 commands:
   admintoolbox:
