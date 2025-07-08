@@ -114,6 +114,11 @@ public class YellCommand implements CommandExecutor, TabCompleter {
 				.map(OfflinePlayer::getName)
 				.filter((name) -> name.toLowerCase().startsWith(partialName))
 				.toList();
+		} else if (args.length > 2
+			&& Arrays.stream(args).noneMatch((arg) -> arg.contains("|"))
+			&& args[args.length - 1].length() <= 0
+		) {
+			return List.of("|");
 		}
 
 		return List.of();
