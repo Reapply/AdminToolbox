@@ -81,8 +81,8 @@ public class YellCommand implements CommandExecutor, TabCompleter {
 			}
 
 			Component broadcastMessage = MiniMessage.miniMessage().deserialize("<gold><admin> yelled at <target>: <title>",
-				Placeholder.unparsed("admin", sender.getName()),
-				Placeholder.unparsed("target", target.getName()),
+				Placeholder.component("admin", sender.name()),
+				Placeholder.component("target", target.name()),
 				Placeholder.component("title", feedbackTitle)
 			);
 			plugin.getAdminAudience()
@@ -90,7 +90,7 @@ public class YellCommand implements CommandExecutor, TabCompleter {
 				.sendMessage(broadcastMessage);
 
 			sender.sendRichMessage("<gold>Yelled at <target>: <title>",
-				Placeholder.unparsed("target", target.getName()),
+				Placeholder.component("target", target.name()),
 				Placeholder.component("title", feedbackTitle)
 			);
 		}

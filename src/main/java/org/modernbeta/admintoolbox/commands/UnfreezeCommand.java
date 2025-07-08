@@ -29,9 +29,9 @@ public class UnfreezeCommand implements CommandExecutor, TabCompleter {
 		if(!sender.hasPermission(UNFREEZE_COMMAND_PERMISSION)) return false; // Bukkit should handle this for us, just a sanity-check
 		if(args.length != 1) return false;
 
-		OfflinePlayer target = Bukkit.getOfflinePlayerIfCached(args[0]);
+		@Nullable OfflinePlayer target = Bukkit.getOfflinePlayerIfCached(args[0]);
 		if(target == null || !plugin.getFreezeManager().isFrozen(target)) {
-			sender.sendRichMessage("<red>Error: Player <gray><name></gray> is not frozen.",
+			sender.sendRichMessage("<red>Player <gray><name></gray> is not frozen.",
 				Placeholder.unparsed("name", args[0]));
 			return true;
 		}
@@ -46,8 +46,8 @@ public class UnfreezeCommand implements CommandExecutor, TabCompleter {
 			PermissionAudience adminAudience = plugin.getAdminAudience().excluding(sender);
 			adminAudience
 				.sendMessage(MiniMessage.miniMessage().deserialize(
-					"<gold><admin> unfroze <target>.",
-					Placeholder.unparsed("admin", sender.getName()),
+					"<gold><admin> released <target>.",
+					Placeholder.component("admin", sender.name()),
 					Placeholder.unparsed("target", target.getName())
 				));
 		}

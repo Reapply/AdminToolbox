@@ -26,14 +26,14 @@ public class GoForwardCommand implements CommandExecutor, TabCompleter {
 		if (args.length > 0) return false;
 
 		if (!(sender instanceof Player player)) {
-			sender.sendRichMessage("<red>Error: You must be a player to run this command!");
+			sender.sendRichMessage("<red>You must be a player to run this command!");
 			return true;
 		}
 
 		AdminManager adminManager = plugin.getAdminManager();
 
 		if (!adminManager.isActiveAdmin(player)) {
-			sender.sendRichMessage("<red>Error: You are not in an active admin state!");
+			sender.sendRichMessage("<red>You are not in an active admin state!");
 			return true;
 		}
 
@@ -41,7 +41,7 @@ public class GoForwardCommand implements CommandExecutor, TabCompleter {
 		Location nextLocation = adminState.getTeleportHistory().goForward();
 
 		if (nextLocation == null) {
-			player.sendRichMessage("<red>Error: You are as far forward as you can go!");
+			player.sendRichMessage("<red>You are as far forward as you can go!");
 		} else {
 			adminManager.target(player, nextLocation, false);
 		}

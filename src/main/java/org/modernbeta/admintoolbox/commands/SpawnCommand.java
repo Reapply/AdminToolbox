@@ -59,14 +59,14 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 
 		plugin.getAdminManager().target(player, spawnLocation);
 
-		player.sendRichMessage("<gold>Spectating at spawn in <yellow><target></yellow>",
+		player.sendRichMessage("<gold>Spectating at <green><target></green> spawn.",
 			Placeholder.unparsed("target", worldLabel));
 
 		if (!player.hasPermission(AdminToolboxPlugin.BROADCAST_EXEMPT_PERMISSION)) {
 			PermissionAudience adminAudience = plugin.getAdminAudience()
 				.excluding(player);
 			adminAudience.sendMessage(MiniMessage.miniMessage().deserialize(
-				"<gold><admin> is spectating at spawn in <yellow><target></yellow>",
+				"<gold><admin> is spectating at <green><target></green> spawn.",
 				Placeholder.unparsed("admin", sender.getName()),
 				Placeholder.unparsed("target", worldLabel)
 			));
@@ -88,6 +88,6 @@ public class SpawnCommand implements CommandExecutor, TabCompleter {
 	}
 
 	private void sendNoPermissionMessage(CommandSender sender) {
-		sender.sendRichMessage("<red>You do not have permission!");
+		sender.sendRichMessage("<red>You do not have permission to do that!");
 	}
 }

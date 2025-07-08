@@ -27,7 +27,7 @@ public class PluginManageCommand implements CommandExecutor, TabCompleter {
 			case 0 -> {
 				//noinspection UnstableApiUsage
 				sender.sendRichMessage(
-					"<gold>Hello from AdminToolbox version <yellow><version></yellow>!",
+					"<gold>Hello from AdminToolbox version <green><version></green>!",
 					Placeholder.unparsed("version", plugin.getPluginMeta().getVersion())
 				);
 			}

@@ -201,7 +201,7 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 						.excluding(player);
 					adminAudience
 						.sendMessage(MiniMessage.miniMessage().deserialize(
-							"<gold><admin> is spectating <target>",
+							"<gold><admin> is spectating at <target>",
 							Placeholder.unparsed("admin", sender.getName()),
 							Placeholder.unparsed("target", targetLabel.get())
 						));
@@ -211,18 +211,18 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 			Throwable cause = ex.getCause();
 			switch (cause) {
 				case NumberFormatException exception ->
-					sender.sendRichMessage("<red>Error: Couldn't parse coordinates: " + exception.getMessage());
+					sender.sendRichMessage("<red>Couldn't parse coordinates: " + exception.getMessage());
 				case IllegalArgumentException exception ->
-					sender.sendRichMessage("<red>Error: " + exception.getMessage());
+					sender.sendRichMessage("<red>" + exception.getMessage());
 				case NullPointerException exception -> {
 					if (args.length == 1) {
-						sender.sendRichMessage("<red>Error: Could not find player '" + args[0] + "'.");
+						sender.sendRichMessage("<red>Could not find player '" + args[0] + "'.");
 					} else {
-						sender.sendRichMessage("<red>Error: " + Optional.of(exception.getMessage()).orElse("Target location not found."));
+						sender.sendRichMessage("<red>" + Optional.of(exception.getMessage()).orElse("Target location not found."));
 					}
 				}
 				case null, default -> {
-					sender.sendRichMessage("<red>Error: Couldn't use that location.");
+					sender.sendRichMessage("<red>Couldn't use that location.");
 					plugin.getLogger().warning("Error in /target command: " + ex.getMessage());
 				}
 			}

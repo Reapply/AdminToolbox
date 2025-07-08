@@ -57,14 +57,14 @@ public class FreezeCommand implements CommandExecutor, TabCompleter {
 			adminAudience
 				.sendMessage(MiniMessage.miniMessage().deserialize(
 					"<gold><admin> froze <target>.",
-					Placeholder.unparsed("admin", sender.getName()),
-					Placeholder.unparsed("target", target.getName())
+					Placeholder.component("admin", sender.name()),
+					Placeholder.component("target", target.name())
 				));
 		}
 
 		sender.sendRichMessage(
-			"<gold>You froze <target>.",
-			Placeholder.unparsed("target", target.getName())
+			"<gold>Froze <target>.",
+			Placeholder.component("target", target.name())
 		);
 
 		return true;

@@ -56,7 +56,11 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
 
 		if (isStreamerModeActive(luckPerms, player)) {
-			if (args.length > 0) return false;
+			if (args.length > 0) {
+				sender.sendRichMessage("<red>You are already in Streamer Mode! Please run <gray><hint></gray> to disable it.",
+					Placeholder.unparsed("hint", "/" + label.toLowerCase()));
+				return true;
+			}
 
 			user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_META_KEY)));
 			user.data().clear(NodeType.PERMISSION.predicate((node) -> // only delete negated, expiring nodes that match configured permissions
@@ -70,12 +74,17 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 			return true;
 		}
 
-		if(args.length != 1) return false;
+		if (args.length < 1) {
+			sender.sendRichMessage("<red>You must provide a duration for Streamer Mode!");
+			return false;
+		} else if (args.length > 1) {
+			return false;
+		}
 
 		Optional<Duration> parsedDuration = parseDuration(args[0]);
 
 		if (parsedDuration.isEmpty()) {
-			sender.sendRichMessage("<red>'<yellow><input></yellow>' is not a supported duration!",
+			sender.sendRichMessage("<red>Invalid duration: \"<gray><input></gray>\"",
 				Placeholder.unparsed("input", args[0]));
 			return true;
 		}
@@ -111,7 +120,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 		luckPerms.getUserManager().saveUser(user);
 
-		sender.sendRichMessage("<gold>Streamer Mode will be enabled for <yellow><duration></yellow>.",
+		sender.sendRichMessage("<gold>Streamer Mode will be enabled for <green><duration></green>.",
 			Placeholder.unparsed("duration", formatDuration(duration)));
 		return true;
 	}
@@ -185,8 +194,8 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 		List<String> resultList = new ArrayList<>();
 
-		if (hours > 0) resultList.add(hours + " hours");
-		if (minutes > 0) resultList.add(minutes + " minutes");
+		if (hours > 0) resultList.add(hours + " hour" + (hours == 1 ? "" : "s"));
+		if (minutes > 0) resultList.add(minutes + " minute" + (minutes == 1 ? "" : "s"));
 
 		return String.join(" ", resultList);
 	}

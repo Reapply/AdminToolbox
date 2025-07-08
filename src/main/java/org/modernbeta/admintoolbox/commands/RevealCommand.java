@@ -22,14 +22,14 @@ public class RevealCommand implements CommandExecutor, TabCompleter {
 		if (!sender.hasPermission(REVEAL_COMMAND_PERMISSION))
 			return false; // Bukkit should handle this for us, just a sanity-check
 		if (!(sender instanceof Player player)) {
-			sender.sendRichMessage("<red>Error: You must be a player to use this command.");
+			sender.sendRichMessage("<red>You must be a player to use this command.");
 			return false;
 		}
 
 		AdminManager adminManager = plugin.getAdminManager();
 
 		if(!adminManager.isSpectating(player)) {
-			player.sendRichMessage("<red>Error: You cannot reveal if you are not spectating!");
+			player.sendRichMessage("<red>You cannot reveal if you are not spectating!");
 			return true;
 		}
 
