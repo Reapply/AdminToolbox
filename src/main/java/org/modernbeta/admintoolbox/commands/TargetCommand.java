@@ -67,8 +67,10 @@ public class TargetCommand implements CommandExecutor, TabCompleter {
 					try {
 						OfflinePlayer offlineTarget = Bukkit.getOfflinePlayer(targetPlayerName);
 						targetLabel.set(offlineTarget.getName());
-						if (!offlineTarget.isOnline()) {
-							targetLabel.set(targetLabel.get() + " (offline player)");
+						if (offlineTarget.isOnline()) {
+							targetLabel.getAndUpdate((existingLabel) -> existingLabel + ".");
+						} else {
+							targetLabel.getAndUpdate((existingLabel) -> existingLabel + ". (offline player)");
 						}
 						Location location = offlineTarget.getLocation();
 						if (location == null) {
