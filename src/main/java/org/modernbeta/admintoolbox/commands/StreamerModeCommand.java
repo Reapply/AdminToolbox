@@ -92,7 +92,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		Duration duration = parsedDuration.get();
 
 		final double maxDurationMinutes = plugin.getConfig().getDouble("streamer-mode.max-duration");
-		if (duration.getSeconds() > (maxDurationMinutes * 60)
+		if ((duration.getSeconds() > (maxDurationMinutes * 60))
 			&& !sender.hasPermission(STREAMER_MODE_BYPASS_MAX_DURATION_PERMISSION)) {
 			sender.sendRichMessage("<red>That duration is above the maximum allowed!");
 			return true;
@@ -189,11 +189,13 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 	}
 
 	private String formatDuration(Duration duration) {
+		long days = duration.toDaysPart();
 		int hours = duration.toHoursPart();
 		int minutes = duration.toMinutesPart();
 
 		List<String> resultList = new ArrayList<>();
 
+		if (days > 0) resultList.add(days + " day" + (days == 1 ? "" : "s"));
 		if (hours > 0) resultList.add(hours + " hour" + (hours == 1 ? "" : "s"));
 		if (minutes > 0) resultList.add(minutes + " minute" + (minutes == 1 ? "" : "s"));
 
