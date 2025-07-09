@@ -161,5 +161,6 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		config.options().copyDefaults(true);
 
 		saveConfig();
+		reloadConfig();
 	}
 }
