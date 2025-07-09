@@ -141,7 +141,7 @@ public class AdminToolboxPlugin extends JavaPlugin {
 		{
 			ConfigurationSection streamerMode = defaults.createSection("streamer-mode");
 			streamerMode.set("allow", true);
-			streamerMode.set("max-duration", 2400d);
+			streamerMode.set("max-duration", 720d); // 720 minutes = 12 hours default max duration
 			streamerMode.set("disable-permissions", List.of("admintoolbox.broadcast.receive"));
 
 			// docs
