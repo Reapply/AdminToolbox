@@ -53,6 +53,7 @@ permissions:
     description: Can enter and exit Streamer Mode.
   admintoolbox.streamermode.unlimited:
     description: Can bypass maximum duration in Streamer Mode.
+    default: false
 
 commands:
   admintoolbox:
