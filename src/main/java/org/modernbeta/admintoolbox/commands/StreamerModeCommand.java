@@ -30,7 +30,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 	private static final String STREAMER_MODE_COMMAND_PERMISSION = "admintoolbox.streamermode";
 	private static final String STREAMER_MODE_BYPASS_MAX_DURATION_PERMISSION = "admintoolbox.streamermode.unlimited";
-	private static final String STREAMER_MODE_META_KEY = "at-streamer-mode-enabled";
+	private static final String STREAMER_MODE_LP_META_KEY = "at-streamer-mode-enabled";
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -62,7 +62,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 				return true;
 			}
 
-			user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_META_KEY)));
+			user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_LP_META_KEY)));
 			user.data().clear(NodeType.PERMISSION.predicate((node) -> // only delete negated, expiring nodes that match configured permissions
 				node.isNegated()
 					&& node.getExpiryDuration() != null
@@ -99,12 +99,12 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		}
 
 		MetaNode metaNode = MetaNode.builder()
-			.key(STREAMER_MODE_META_KEY)
+			.key(STREAMER_MODE_LP_META_KEY)
 			.value(Boolean.toString(true))
 			.expiry(duration)
 			.build();
 
-		user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_META_KEY)));
+		user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_LP_META_KEY)));
 		user.data().add(metaNode);
 
 		// using LuckPerms API, add negated/'false' versions of permissions from config.yml to user for duration
@@ -203,7 +203,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 	private boolean isStreamerModeActive(LuckPerms luckPerms, Player player) {
 		return luckPerms.getPlayerAdapter(Player.class)
 			.getMetaData(player)
-			.getMetaValue(STREAMER_MODE_META_KEY, Boolean::valueOf)
+			.getMetaValue(STREAMER_MODE_LP_META_KEY, Boolean::valueOf)
 			.orElse(false);
 	}
 }
