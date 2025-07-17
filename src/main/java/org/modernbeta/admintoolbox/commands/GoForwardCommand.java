@@ -33,7 +33,7 @@ public class GoForwardCommand implements CommandExecutor, TabCompleter {
 		AdminManager adminManager = plugin.getAdminManager();
 
 		if (!adminManager.isActiveAdmin(player)) {
-			sender.sendRichMessage("<red>You are not in an active admin state!");
+			sender.sendRichMessage("<red>You are not in admin mode!");
 			return true;
 		}
 
