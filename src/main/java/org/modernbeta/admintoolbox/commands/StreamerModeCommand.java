@@ -55,13 +55,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		List<String> disablePermissions = plugin.getConfig().getStringList("streamer-mode.disable-permissions");
 		User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
 
-		if (isStreamerModeActive(luckPerms, player)) {
-			if (args.length > 0) {
-				sender.sendRichMessage("<red>You are already in Streamer Mode! Please run <gray><hint></gray> to disable it.",
-					Placeholder.unparsed("hint", "/" + label.toLowerCase()));
-				return true;
-			}
-
+		if (args.length == 0 && isStreamerModeActive(luckPerms, player)) {
 			user.data().clear(NodeType.META.predicate((node) -> node.getMetaKey().equals(STREAMER_MODE_LP_META_KEY)));
 			user.data().clear(NodeType.PERMISSION.predicate((node) -> // only delete negated, expiring nodes that match configured permissions
 				node.isNegated()
@@ -129,19 +123,18 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 		if (args.length != 1) return List.of();
 		if (plugin.getLuckPermsAPI().isEmpty()) return List.of();
-		if (!(sender instanceof Player player)) return List.of();
+		if (!(sender instanceof Player)) return List.of();
 
-		// if player is in Streamer Mode, do not validate/suggest duration since this is an 'off' toggle!
-		{
-			LuckPerms luckPerms = plugin.getLuckPermsAPI().get();
-			if (isStreamerModeActive(luckPerms, player)) return List.of();
+		String partialEntry = args[0];
+
+		if(partialEntry.isEmpty()) {
+			// Suggest durations if nothing is entered yet -- this is a good UX hint for how to use the command!
+			return List.of("5m", "15m", "30m", "1h", "5h", "8h");
 		}
-
-		String partialArgument = args[0];
 
 		// if arg is int-parseable, suggest time suffixes m/h (for minutes/hours)
 		try {
-			Integer.parseUnsignedInt(partialArgument);
+			Integer.parseUnsignedInt(partialEntry);
 		} catch (NumberFormatException e) {
 			return List.of();
 		}
@@ -149,7 +142,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 		List<String> supportedUnits = List.of("h", "m");
 
 		return supportedUnits.stream()
-			.map((unit) -> partialArgument + unit) // suggests typed number with units at end - i.e. 15 -> 15m, 15h
+			.map((unit) -> partialEntry + unit) // suggests typed number with units at end - i.e. 15 -> 15m, 15h
 			.toList();
 	}
 
