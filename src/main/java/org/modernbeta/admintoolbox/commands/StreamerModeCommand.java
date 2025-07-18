@@ -109,6 +109,9 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 				.negated(true)
 				.build();
 
+			user.data().clear(NodeType.PERMISSION.predicate(
+				(node) -> node.getPermission().equals(permission) && node.isNegated()
+			));
 			user.data().add(permissionNode);
 		}
 
