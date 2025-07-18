@@ -129,7 +129,7 @@ public class StreamerModeCommand implements CommandExecutor, TabCompleter {
 
 		if(partialEntry.isEmpty()) {
 			// Suggest durations if nothing is entered yet -- this is a good UX hint for how to use the command!
-			return List.of("5m", "15m", "30m", "1h", "5h", "8h");
+			return List.of("15m", "30m", "5h", "8h");
 		}
 
 		// if arg is int-parseable, suggest time suffixes m/h (for minutes/hours)
